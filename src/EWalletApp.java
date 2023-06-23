@@ -115,4 +115,366 @@ public class EWalletApp {
 		return false;
 	}
 
+	public static void main(String[] args) {
+
+	}
+
+}
+
+class appFrame extends JFrame {
+
+	JMenuBar navMenuBar;
+	JMenu navMenu;
+	JMenuItem homeNav, addItemNav, importNav, estimateNav, incomeReportNav, expenseReportNav, detailedReportNav;
+
+	appFrame(){
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// this.setPreferredSize(new Dimension(800,600));
+		this.setTitle("EWallet Application");
+
+
+		homePanel hPanel = new homePanel();
+		addItemPanel addItmPanel = new addItemPanel();
+		importPanel impPanel = new importPanel();
+		estimatePanel estPanel = new estimatePanel();
+		incomeRepPanel incRepPanel = new incomeRepPanel();
+		expenseRepPanel expRepPanel = new expenseRepPanel();
+		detailedRepPanel detRepPanel = new detailedRepPanel();
+		getContentPane().add(hPanel);
+		navMenuBar = new JMenuBar();
+		navMenu = new JMenu("<html><p style='margin-left:20'>Menu");
+		homeNav = new JMenuItem("<html><p style='margin-left:15'>Home");
+		homeNav.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+				super.mouseClicked(e);
+				getContentPane().removeAll();
+				getContentPane().add(hPanel);
+				revalidate();
+				repaint();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				super.mouseReleased(e);
+				revalidate();
+				repaint();
+			}
+		});
+		addItemNav = new JMenuItem("<html><p style='margin-left:15'>Add Item");
+		addItemNav.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+				super.mouseClicked(e);
+				getContentPane().removeAll();
+				getContentPane().add(addItmPanel);
+				revalidate();
+				repaint();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				super.mouseReleased(e);
+				revalidate();
+				repaint();
+			}
+		});
+
+		importNav = new JMenuItem("<html><p style='margin-left:15'>Import Tool");
+		importNav.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				super.mouseClicked(e);
+				getContentPane().removeAll();
+				revalidate();
+				repaint();
+				getContentPane().add(impPanel);
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				super.mouseReleased(e);
+				revalidate();
+				repaint();
+			}
+		});
+		estimateNav = new JMenuItem("<html><p style='margin-left:15'>Estimate Tool");
+		estimateNav.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+				super.mouseClicked(e);
+				getContentPane().removeAll();
+				getContentPane().add(estPanel);
+				revalidate();
+				repaint();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				super.mouseReleased(e);
+				revalidate();
+				repaint();
+			}
+		});
+		incomeReportNav = new JMenuItem("<html><p style='margin-left:15'>Income Report");
+		incomeReportNav.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+				super.mouseClicked(e);
+				getContentPane().removeAll();
+				getContentPane().add(incRepPanel);
+				revalidate();
+				repaint();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				super.mouseReleased(e);
+				revalidate();
+				repaint();
+			}
+		});
+		expenseReportNav = new JMenuItem("<html><p style='margin-left:15'>Expense Report");
+		expenseReportNav.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+				super.mouseClicked(e);
+				getContentPane().removeAll();
+				getContentPane().add(expRepPanel);
+				revalidate();
+				repaint();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				super.mouseReleased(e);
+				revalidate();
+				repaint();
+			}
+		});
+		detailedReportNav = new JMenuItem("<html><p style='margin-left:15'>Detailed Report");
+		detailedReportNav.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+				super.mouseClicked(e);
+				getContentPane().removeAll();
+				getContentPane().add(detRepPanel);
+				revalidate();
+				repaint();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				super.mouseReleased(e);
+				revalidate();
+				repaint();
+			}
+		});
+
+		navMenu.setFont(new Font(null, Font.PLAIN, 24));
+		homeNav.setFont(new Font(null, Font.PLAIN, 20));
+		addItemNav.setFont(new Font(null, Font.PLAIN, 20));
+		importNav.setFont(new Font(null, Font.PLAIN, 20));
+		estimateNav.setFont(new Font(null, Font.PLAIN, 20));
+		incomeReportNav.setFont(new Font(null, Font.PLAIN, 20));
+		expenseReportNav.setFont(new Font(null, Font.PLAIN, 20));
+		detailedReportNav.setFont(new Font(null, Font.PLAIN, 20));
+
+		navMenu.add(homeNav);
+		navMenu.add(addItemNav);
+		navMenu.add(importNav);
+		navMenu.add(estimateNav);
+		navMenu.add(incomeReportNav);
+		navMenu.add(expenseReportNav);
+		navMenu.add(detailedReportNav);
+		navMenuBar.add(navMenu);
+
+		this.setJMenuBar(navMenuBar);
+		this.setLayout(new CardLayout());
+		this.pack();
+		this.setVisible(true);
+	}
+}
+
+class homePanel extends JPanel {
+
+	JLabel summaryTxt;
+	JLabel totalIncomeLbl, totalIncomeAmtLbl;
+	JLabel totalExpensesLbl, totalExpensesAmtLbl;
+	JLabel totalSavingsLbl, totalSavingsAmtLbl;
+	GridBagConstraints gbConst;
+	homePanel() {
+
+		summaryTxt = new JLabel("User Summary");
+		totalIncomeLbl = new JLabel("Total Income: ");
+		totalIncomeAmtLbl = new JLabel("$0.00");
+		totalExpensesLbl = new JLabel("Total Expenses: ");
+		totalExpensesAmtLbl = new JLabel("$0.00");
+		totalSavingsLbl = new JLabel("Total Savings: ");
+		totalSavingsAmtLbl = new JLabel("$0.00");
+		gbConst = new GridBagConstraints();
+		this.setLayout(new GridBagLayout());
+
+		gbConst.gridx = 0;
+		gbConst.gridy = 0;
+		gbConst.gridwidth = 2;
+		gbConst.insets = new Insets(20,20,20,20);
+		summaryTxt.setFont(new Font(null, Font.PLAIN, 32));
+		this.add(summaryTxt, gbConst);
+
+		gbConst.gridx = 0;
+		gbConst.gridy = 1;
+		gbConst.gridwidth = 1;
+		gbConst.insets = new Insets(20,40,20,5);
+		totalIncomeLbl.setFont(new Font(null, Font.PLAIN, 25));
+		this.add(totalIncomeLbl, gbConst);
+
+		gbConst.gridx = 1;
+		gbConst.gridy = 1;
+		gbConst.insets = new Insets(20,10,20,40);
+		totalIncomeAmtLbl.setFont(new Font(null, Font.PLAIN, 25));
+		this.add(totalIncomeAmtLbl, gbConst);
+
+		gbConst.gridx = 0;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(20,40,20,5);
+		totalExpensesLbl.setFont(new Font(null, Font.PLAIN, 25));
+		this.add(totalExpensesLbl, gbConst);
+
+		gbConst.gridx = 1;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(20,10,20,40);
+		totalExpensesAmtLbl.setFont(new Font(null, Font.PLAIN, 25));
+		this.add(totalExpensesAmtLbl, gbConst);
+
+		gbConst.gridx = 0;
+		gbConst.gridy = 3;
+		gbConst.insets = new Insets(20,40,40,5);
+		totalSavingsLbl.setFont(new Font(null, Font.PLAIN, 25));
+		this.add(totalSavingsLbl, gbConst);
+
+		gbConst.gridx = 1;
+		gbConst.gridy = 3;
+		gbConst.insets = new Insets(20,10,40,40);
+		totalSavingsAmtLbl.setFont(new Font(null, Font.PLAIN, 25));
+		this.add(totalSavingsAmtLbl, gbConst);
+	}
+}
+
+class addItemPanel extends JPanel {
+	GridBagConstraints gbConst;
+	JLabel addItemLbl;
+	JLabel nameLbl, amountLbl, monthLbl, frequencyLbl;
+	JTextField nameField, amountField, monthField, frequencyField;
+	addItemPanel() {
+		gbConst = new GridBagConstraints();
+		this.setLayout(new GridBagLayout());
+
+		addItemLbl = new JLabel("Add Item");
+		nameLbl = new JLabel("Name");
+		amountLbl = new JLabel("Amount");
+		monthLbl = new JLabel("Month");
+		frequencyLbl = new JLabel("Frequency");
+
+		nameField = new JTextField();
+		nameField.setPreferredSize(new Dimension(180, 40));
+		amountField = new JTextField();
+		amountField.setPreferredSize(new Dimension(180, 40));
+		monthField = new JTextField();
+		monthField.setPreferredSize(new Dimension(180, 40));
+		frequencyField = new JTextField();
+		frequencyField.setPreferredSize(new Dimension(180, 40));
+
+		gbConst.gridx = 0;
+		gbConst.gridy = 0;
+		gbConst.gridwidth = 2;
+		gbConst.insets = new Insets(0,20,20,20);
+		addItemLbl.setFont(new Font(null, Font.PLAIN, 32));
+		this.add(addItemLbl, gbConst);
+
+		gbConst.gridx = 0;
+		gbConst.gridy = 1;
+		gbConst.gridwidth = 1;
+		gbConst.insets = new Insets(10,20,20,5);
+		nameLbl.setFont(new Font(null, Font.PLAIN, 24));
+		this.add(nameLbl, gbConst);
+
+		gbConst.gridx = 1;
+		gbConst.gridy = 1;
+		gbConst.insets = new Insets(10,10,20,20);
+		nameField.setFont(new Font(null, Font.PLAIN, 24));
+		this.add(nameField, gbConst);
+
+		gbConst.gridx = 0;
+		gbConst.gridy = 2;
+		gbConst.gridwidth = 1;
+		gbConst.insets = new Insets(10,20,20,5);
+		amountLbl.setFont(new Font(null, Font.PLAIN, 24));
+		this.add(amountLbl, gbConst);
+
+		gbConst.gridx = 1;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(10,10,20,20);
+		amountField.setFont(new Font(null, Font.PLAIN, 24));
+		this.add(amountField, gbConst);
+
+		gbConst.gridx = 0;
+		gbConst.gridy = 3;
+		gbConst.gridwidth = 1;
+		gbConst.insets = new Insets(10,20,20,5);
+		amountLbl.setFont(new Font(null, Font.PLAIN, 24));
+		this.add(amountLbl, gbConst);
+
+		gbConst.gridx = 1;
+		gbConst.gridy = 3;
+		gbConst.insets = new Insets(10,10,20,20);
+		amountField.setFont(new Font(null, Font.PLAIN, 24));
+		this.add(amountField, gbConst);
+	}
+}
+
+class importPanel extends JPanel {
+	JLabel testLbl;
+	importPanel() {
+		testLbl = new JLabel("Test Import Nav");
+		this.add(testLbl);
+	}
+}
+
+class estimatePanel extends JPanel {
+	JLabel testLbl;
+	estimatePanel() {
+		testLbl = new JLabel("Test Estimate Nav");
+		this.add(testLbl);
+	}
+}
+
+class incomeRepPanel extends JPanel {
+	JLabel testLbl;
+	incomeRepPanel() {
+		testLbl = new JLabel("Test Income Report Nav");
+		this.add(testLbl);
+	}
+}
+
+class expenseRepPanel extends JPanel {
+	JLabel testLbl;
+	expenseRepPanel() {
+		testLbl = new JLabel("Test Expense Report Nav");
+		this.add(testLbl);
+	}
+}
+
+class detailedRepPanel extends JPanel {
+	JLabel testLbl;
+	detailedRepPanel() {
+		testLbl = new JLabel("Test Detailed Report Nav");
+		this.add(testLbl);
+	}
 }
