@@ -647,10 +647,86 @@ class importPanel extends JPanel {
 }
 
 class estimatePanel extends JPanel {
-	JLabel testLbl;
+	GridBagConstraints gbConst;
+	JLabel estimateTitleLbl, nameLbl, priceLbl, estimateLbl, estimateAmtLbl;
+	JTextField nameField, priceField;
+	JButton estimateButton;
 	estimatePanel() {
-		testLbl = new JLabel("Test Estimate Nav");
-		this.add(testLbl);
+		this.setLayout(new GridBagLayout());
+		gbConst = new GridBagConstraints();
+
+		estimateTitleLbl = new JLabel("Estimate Tool");
+		gbConst.gridx = 0;
+		gbConst.gridy = 0;
+		gbConst.gridwidth = 2;
+		gbConst.insets = new Insets(10,20,30,30);
+		estimateTitleLbl.setFont(new Font(null, Font.PLAIN, 44));
+		this.add(estimateTitleLbl, gbConst);
+
+		estimateLbl = new JLabel("Estimate:");
+		gbConst.gridx = 0;
+		gbConst.gridy = 1;
+		gbConst.gridwidth = 1;
+		gbConst.insets = new Insets(10,0,30,0);
+		estimateLbl.setFont(new Font(null, Font.PLAIN, 32));
+		this.add(estimateLbl, gbConst);
+
+		estimateAmtLbl = new JLabel("120 days");
+		gbConst.gridx = 1;
+		gbConst.gridy = 1;
+		gbConst.insets = new Insets(10,0,30,0);
+		estimateAmtLbl.setFont(new Font(null, Font.PLAIN, 32));
+		this.add(estimateAmtLbl, gbConst);
+
+		nameLbl = new JLabel("Item Name");
+		gbConst.gridx = 0;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(10,20,30,30);
+		nameLbl.setFont(new Font(null, Font.PLAIN, 32));
+		this.add(nameLbl, gbConst);
+
+		nameField = new JTextField();
+		nameField.setPreferredSize(new Dimension(280, 50));
+		gbConst.gridx = 1;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(10,10,30,30);
+		nameField.setFont(new Font(null, Font.PLAIN, 28));
+		this.add(nameField, gbConst);
+
+		priceLbl = new JLabel("Item Price");
+		gbConst.gridx = 0;
+		gbConst.gridy = 3;
+		gbConst.insets = new Insets(10,20,30,30);
+		priceLbl.setFont(new Font(null, Font.PLAIN, 32));
+		this.add(priceLbl, gbConst);
+
+		priceField = new JTextField();
+		priceField.setPreferredSize(new Dimension(280, 50));
+		gbConst.gridx = 1;
+		gbConst.gridy = 3;
+		gbConst.insets = new Insets(10,10,30,30);
+		priceField.setFont(new Font(null, Font.PLAIN, 28));
+		this.add(priceField, gbConst);
+
+		estimateButton = new JButton("Get Estimate");
+		estimateButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource() == estimateButton) {
+					System.out.println("Get Estimate Button Clicked.");
+					nameField.setText("");
+					priceField.setText("");
+				}
+			}
+		});
+		estimateButton.setPreferredSize(new Dimension(220, 60));
+		gbConst.gridx = 0;
+		gbConst.gridy = 4;
+		gbConst.gridwidth = 2;
+		gbConst.insets = new Insets(30,30,30,30);
+		estimateButton.setFont(new Font(null, Font.PLAIN, 28));
+		this.add(estimateButton, gbConst);
+
 	}
 }
 
