@@ -129,7 +129,7 @@ class appFrame extends JFrame {
 
 	appFrame(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		// this.setPreferredSize(new Dimension(800,600));
+		this.setPreferredSize(new Dimension(500,650));
 		this.setTitle("EWallet Application");
 
 
@@ -367,83 +367,274 @@ class homePanel extends JPanel {
 	}
 }
 
-class addItemPanel extends JPanel {
+class addItemPanel extends JTabbedPane {
 	GridBagConstraints gbConst;
-	JLabel addItemLbl;
-	JLabel nameLbl, amountLbl, monthLbl, frequencyLbl;
-	JTextField nameField, amountField, monthField, frequencyField;
+	JPanel incomePane, expensePane;
+	JLabel addIncomeItemLbl, addExpenseItemLbl;
+	JLabel nameIncomeLbl, amountIncomeLbl, monthExpenseLbl;
+	JLabel nameExpenseLbl, amountExpenseLbl, frequencyIncomeLbl;
+	JTextField nameIncField, amountIncField, frequencyIncField;
+	JTextField nameExpField, amountExpField, monthExpField;
+	JButton addIncomeButton, addExpenseButton;
 	addItemPanel() {
+		incomePane = new JPanel();
+		expensePane = new JPanel();
+
+		addIncomeButton = new JButton("Add");
+		addExpenseButton = new JButton("Add");
+
 		gbConst = new GridBagConstraints();
-		this.setLayout(new GridBagLayout());
+		incomePane.setLayout(new GridBagLayout());
+		expensePane.setLayout(new GridBagLayout());
 
-		addItemLbl = new JLabel("Add Item");
-		nameLbl = new JLabel("Name");
-		amountLbl = new JLabel("Amount");
-		monthLbl = new JLabel("Month");
-		frequencyLbl = new JLabel("Frequency");
+		addIncomeItemLbl = new JLabel("Add Item");
+		nameIncomeLbl = new JLabel("Name");
+		amountIncomeLbl = new JLabel("Amount");
+		monthExpenseLbl = new JLabel("Month");
 
-		nameField = new JTextField();
-		nameField.setPreferredSize(new Dimension(180, 40));
-		amountField = new JTextField();
-		amountField.setPreferredSize(new Dimension(180, 40));
-		monthField = new JTextField();
-		monthField.setPreferredSize(new Dimension(180, 40));
-		frequencyField = new JTextField();
-		frequencyField.setPreferredSize(new Dimension(180, 40));
+		addExpenseItemLbl = new JLabel("Add Item");
+		nameExpenseLbl = new JLabel("Name");
+		amountExpenseLbl = new JLabel("Amount");
+		frequencyIncomeLbl = new JLabel("Frequency");
+
+		nameIncField = new JTextField();
+		nameIncField.setPreferredSize(new Dimension(180, 40));
+		amountIncField = new JTextField();
+		amountIncField.setPreferredSize(new Dimension(180, 40));
+		frequencyIncField = new JTextField();
+		frequencyIncField.setPreferredSize(new Dimension(180, 40));
+
+		nameExpField = new JTextField();
+		nameExpField.setPreferredSize(new Dimension(180, 40));
+		amountExpField = new JTextField();
+		amountExpField.setPreferredSize(new Dimension(180, 40));
+		monthExpField = new JTextField();
+		monthExpField.setPreferredSize(new Dimension(180, 40));
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 0;
 		gbConst.gridwidth = 2;
 		gbConst.insets = new Insets(0,20,20,20);
-		addItemLbl.setFont(new Font(null, Font.PLAIN, 32));
-		this.add(addItemLbl, gbConst);
+		addIncomeItemLbl.setFont(new Font(null, Font.PLAIN, 32));
+		incomePane.add(addIncomeItemLbl, gbConst);
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 1;
 		gbConst.gridwidth = 1;
-		gbConst.insets = new Insets(10,20,20,5);
-		nameLbl.setFont(new Font(null, Font.PLAIN, 24));
-		this.add(nameLbl, gbConst);
+		gbConst.insets = new Insets(10,20,20,15);
+		nameIncomeLbl.setFont(new Font(null, Font.PLAIN, 24));
+		incomePane.add(nameIncomeLbl, gbConst);
 
 		gbConst.gridx = 1;
 		gbConst.gridy = 1;
-		gbConst.insets = new Insets(10,10,20,20);
-		nameField.setFont(new Font(null, Font.PLAIN, 24));
-		this.add(nameField, gbConst);
+		gbConst.insets = new Insets(10,10,20,30);
+		nameIncField.setFont(new Font(null, Font.PLAIN, 24));
+		incomePane.add(nameIncField, gbConst);
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 2;
 		gbConst.gridwidth = 1;
-		gbConst.insets = new Insets(10,20,20,5);
-		amountLbl.setFont(new Font(null, Font.PLAIN, 24));
-		this.add(amountLbl, gbConst);
+		gbConst.insets = new Insets(10,20,20,15);
+		amountIncomeLbl.setFont(new Font(null, Font.PLAIN, 24));
+		incomePane.add(amountIncomeLbl, gbConst);
 
 		gbConst.gridx = 1;
 		gbConst.gridy = 2;
-		gbConst.insets = new Insets(10,10,20,20);
-		amountField.setFont(new Font(null, Font.PLAIN, 24));
-		this.add(amountField, gbConst);
+		gbConst.insets = new Insets(10,10,20,30);
+		amountIncField.setFont(new Font(null, Font.PLAIN, 24));
+		incomePane.add(amountIncField, gbConst);
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 3;
 		gbConst.gridwidth = 1;
 		gbConst.insets = new Insets(10,20,20,5);
-		amountLbl.setFont(new Font(null, Font.PLAIN, 24));
-		this.add(amountLbl, gbConst);
+		frequencyIncomeLbl.setFont(new Font(null, Font.PLAIN, 24));
+		incomePane.add(frequencyIncomeLbl, gbConst);
 
 		gbConst.gridx = 1;
 		gbConst.gridy = 3;
-		gbConst.insets = new Insets(10,10,20,20);
-		amountField.setFont(new Font(null, Font.PLAIN, 24));
-		this.add(amountField, gbConst);
+		gbConst.insets = new Insets(10,10,20,30);
+		frequencyIncField.setFont(new Font(null, Font.PLAIN, 24));
+		incomePane.add(frequencyIncField, gbConst);
+
+		gbConst.gridx = 0;
+		gbConst.gridy = 4;
+		gbConst.gridwidth = 2;
+		gbConst.insets = new Insets(10,10,20,30);
+		addIncomeButton.setFont(new Font(null, Font.PLAIN, 24));
+		incomePane.add(addIncomeButton, gbConst);
+
+		addIncomeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource() == addIncomeButton) {
+					System.out.println("Add Income Button Clicked.");
+					nameIncField.setText("");
+					frequencyIncField.setText("");
+					amountIncField.setText("");
+				}
+			}
+		});
+
+		this.add("Add Income", incomePane);
+
+		gbConst.gridx = 0;
+		gbConst.gridy = 0;
+		gbConst.insets = new Insets(0,20,20,20);
+		addExpenseItemLbl.setFont(new Font(null, Font.PLAIN, 32));
+		expensePane.add(addExpenseItemLbl, gbConst);
+
+		gbConst.gridx = 0;
+		gbConst.gridy = 1;
+		gbConst.gridwidth = 1;
+		gbConst.insets = new Insets(10,20,20,25);
+		nameExpenseLbl.setFont(new Font(null, Font.PLAIN, 24));
+		expensePane.add(nameExpenseLbl, gbConst);
+
+		gbConst.gridx = 1;
+		gbConst.gridy = 1;
+		gbConst.insets = new Insets(10,10,20,30);
+		nameExpField.setFont(new Font(null, Font.PLAIN, 24));
+		expensePane.add(nameExpField, gbConst);
+
+		gbConst.gridx = 0;
+		gbConst.gridy = 2;
+		gbConst.gridwidth = 1;
+		gbConst.insets = new Insets(10,20,20,25);
+		amountExpenseLbl.setFont(new Font(null, Font.PLAIN, 24));
+		expensePane.add(amountExpenseLbl, gbConst);
+
+		gbConst.gridx = 1;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(10,10,20,30);
+		amountExpField.setFont(new Font(null, Font.PLAIN, 24));
+		expensePane.add(amountExpField, gbConst);
+
+		gbConst.gridx = 0;
+		gbConst.gridy = 3;
+		gbConst.gridwidth = 1;
+		gbConst.insets = new Insets(10,20,20,25);
+		monthExpenseLbl.setFont(new Font(null, Font.PLAIN, 24));
+		expensePane.add(monthExpenseLbl, gbConst);
+
+		gbConst.gridx = 1;
+		gbConst.gridy = 3;
+		gbConst.insets = new Insets(10,10,20,30);
+		monthExpField.setFont(new Font(null, Font.PLAIN, 24));
+		expensePane.add(monthExpField, gbConst);
+
+		gbConst.gridx = 0;
+		gbConst.gridy = 4;
+		gbConst.gridwidth = 2;
+		gbConst.insets = new Insets(10,10,20,30);
+		addExpenseButton.setFont(new Font(null, Font.PLAIN, 24));
+		expensePane.add(addExpenseButton, gbConst);
+
+		addExpenseButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource() == addExpenseButton) {
+					System.out.println("Add Expense Button Clicked.");
+					nameExpField.setText("");
+					monthExpField.setText("");
+					amountExpField.setText("");
+				}
+			}
+		});
+
+		this.add("Add Expense", expensePane);
+		this.setFont(new Font(null, Font.PLAIN, 20));
 	}
 }
 
 class importPanel extends JPanel {
-	JLabel testLbl;
+
+	GridBagConstraints gbConst;
+	JLabel importLbl, selectFileLbl, selectTypeLbl, descriptionLbl;
+	JButton selectFileButton, importButton;
+	JFileChooser fileChooser;
+	String typesOfImports[];
+	JComboBox<String> options;
+	File userFile;
 	importPanel() {
-		testLbl = new JLabel("Test Import Nav");
-		this.add(testLbl);
+
+		this.setLayout(new GridBagLayout());
+		gbConst = new GridBagConstraints();
+		typesOfImports = new String[] {"Income","Expense"};
+		options = new JComboBox<>(typesOfImports);
+		options.setSelectedIndex(0);
+
+		importLbl = new JLabel("Import From File");
+		gbConst.gridx = 0;
+		gbConst.gridy = 0;
+		gbConst.gridwidth = 2;
+		gbConst.insets = new Insets(10,30,20,30);
+		importLbl.setFont(new Font(null, Font.PLAIN, 44));
+		this.add(importLbl, gbConst);
+
+		selectFileButton = new JButton("File");
+		selectFileButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (e.getSource() == selectFileButton) {
+					int userDecision = fileChooser.showOpenDialog(null);
+					if(userDecision == JFileChooser.APPROVE_OPTION) {
+						userFile = fileChooser.getSelectedFile();
+						System.out.println("The user selected: " + userFile.getAbsolutePath());
+					} else if (userDecision == JFileChooser.CANCEL_OPTION) {
+						System.out.println("The user canceled the operation.");
+					}
+				}
+			}
+		});
+
+		selectFileLbl = new JLabel("Select File");
+		gbConst.gridx = 0;
+		gbConst.gridy = 1;
+		gbConst.gridwidth = 1;
+		gbConst.insets = new Insets(30,30,20,0);
+		selectFileLbl.setFont(new Font(null, Font.PLAIN, 24));
+		this.add(selectFileLbl, gbConst);
+
+		gbConst.gridx = 1;
+		gbConst.gridy = 1;
+		gbConst.insets = new Insets(30,0,20,30);
+		selectFileButton.setFont(new Font(null, Font.PLAIN, 24));
+		this.add(selectFileButton, gbConst);
+
+		selectTypeLbl = new JLabel("Select Type");
+		gbConst.gridx = 0;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(30,30,20,0);
+		selectTypeLbl.setFont(new Font(null, Font.PLAIN, 24));
+		this.add(selectTypeLbl, gbConst);
+
+		gbConst.gridx = 1;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(30,0,20,30);
+		options.setFont(new Font(null, Font.PLAIN, 24));
+		this.add(options, gbConst);
+
+		descriptionLbl = new JLabel("<html><body style='text-align: center'>Note: Only CSV files are supported.  <br><br>Once you select a file, click the import button.</body></html>");
+		gbConst.gridwidth = 2;
+		gbConst.gridheight = 2;
+		gbConst.gridx = 0;
+		gbConst.gridy = 3;
+		gbConst.insets = new Insets(30,30,30,30);
+		descriptionLbl.setFont(new Font(null, Font.PLAIN, 20));
+		this.add(descriptionLbl, gbConst);
+
+		importButton = new JButton("Import");
+		gbConst.gridheight = 1;
+		gbConst.gridx = 0;
+		gbConst.gridy = 5;
+		gbConst.insets = new Insets(30,0,30,30);
+		importButton.setFont(new Font(null, Font.PLAIN, 24));
+		this.add(importButton, gbConst);
+
+		fileChooser = new JFileChooser();
+
+
 	}
 }
 
