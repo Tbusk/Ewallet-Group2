@@ -1,3 +1,9 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -116,7 +122,7 @@ public class EWalletApp {
 	}
 
 	public static void main(String[] args) {
-
+		appFrame app = new appFrame();
 	}
 
 }
@@ -129,7 +135,7 @@ class appFrame extends JFrame {
 
 	appFrame(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setPreferredSize(new Dimension(500,650));
+		this.setPreferredSize(new Dimension(600,700));
 		this.setTitle("EWallet Application");
 
 
@@ -324,45 +330,45 @@ class homePanel extends JPanel {
 		gbConst.gridx = 0;
 		gbConst.gridy = 0;
 		gbConst.gridwidth = 2;
-		gbConst.insets = new Insets(20,20,20,20);
-		summaryTxt.setFont(new Font(null, Font.PLAIN, 32));
+		gbConst.insets = new Insets(20,20,60,20);
+		summaryTxt.setFont(new Font(null, Font.PLAIN, 44));
 		this.add(summaryTxt, gbConst);
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 1;
 		gbConst.gridwidth = 1;
 		gbConst.insets = new Insets(20,40,20,5);
-		totalIncomeLbl.setFont(new Font(null, Font.PLAIN, 25));
+		totalIncomeLbl.setFont(new Font(null, Font.PLAIN, 32));
 		this.add(totalIncomeLbl, gbConst);
 
 		gbConst.gridx = 1;
 		gbConst.gridy = 1;
 		gbConst.insets = new Insets(20,10,20,40);
-		totalIncomeAmtLbl.setFont(new Font(null, Font.PLAIN, 25));
+		totalIncomeAmtLbl.setFont(new Font(null, Font.PLAIN, 32));
 		this.add(totalIncomeAmtLbl, gbConst);
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 2;
 		gbConst.insets = new Insets(20,40,20,5);
-		totalExpensesLbl.setFont(new Font(null, Font.PLAIN, 25));
+		totalExpensesLbl.setFont(new Font(null, Font.PLAIN, 32));
 		this.add(totalExpensesLbl, gbConst);
 
 		gbConst.gridx = 1;
 		gbConst.gridy = 2;
 		gbConst.insets = new Insets(20,10,20,40);
-		totalExpensesAmtLbl.setFont(new Font(null, Font.PLAIN, 25));
+		totalExpensesAmtLbl.setFont(new Font(null, Font.PLAIN, 32));
 		this.add(totalExpensesAmtLbl, gbConst);
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 3;
 		gbConst.insets = new Insets(20,40,40,5);
-		totalSavingsLbl.setFont(new Font(null, Font.PLAIN, 25));
+		totalSavingsLbl.setFont(new Font(null, Font.PLAIN, 32));
 		this.add(totalSavingsLbl, gbConst);
 
 		gbConst.gridx = 1;
 		gbConst.gridy = 3;
 		gbConst.insets = new Insets(20,10,40,40);
-		totalSavingsAmtLbl.setFont(new Font(null, Font.PLAIN, 25));
+		totalSavingsAmtLbl.setFont(new Font(null, Font.PLAIN, 32));
 		this.add(totalSavingsAmtLbl, gbConst);
 	}
 }
@@ -395,73 +401,74 @@ class addItemPanel extends JTabbedPane {
 		addExpenseItemLbl = new JLabel("Add Item");
 		nameExpenseLbl = new JLabel("Name");
 		amountExpenseLbl = new JLabel("Amount");
-		frequencyIncomeLbl = new JLabel("Frequency");
+		frequencyIncomeLbl = new JLabel("Freq.");
 
 		nameIncField = new JTextField();
-		nameIncField.setPreferredSize(new Dimension(180, 40));
+		nameIncField.setPreferredSize(new Dimension(280, 50));
 		amountIncField = new JTextField();
-		amountIncField.setPreferredSize(new Dimension(180, 40));
+		amountIncField.setPreferredSize(new Dimension(280, 50));
 		frequencyIncField = new JTextField();
-		frequencyIncField.setPreferredSize(new Dimension(180, 40));
+		frequencyIncField.setPreferredSize(new Dimension(280, 50));
 
 		nameExpField = new JTextField();
-		nameExpField.setPreferredSize(new Dimension(180, 40));
+		nameExpField.setPreferredSize(new Dimension(280, 50));
 		amountExpField = new JTextField();
-		amountExpField.setPreferredSize(new Dimension(180, 40));
+		amountExpField.setPreferredSize(new Dimension(280, 50));
 		monthExpField = new JTextField();
-		monthExpField.setPreferredSize(new Dimension(180, 40));
+		monthExpField.setPreferredSize(new Dimension(280, 50));
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 0;
 		gbConst.gridwidth = 2;
-		gbConst.insets = new Insets(0,20,20,20);
-		addIncomeItemLbl.setFont(new Font(null, Font.PLAIN, 32));
+		gbConst.insets = new Insets(0,20,60,30);
+		addIncomeItemLbl.setFont(new Font(null, Font.PLAIN, 44));
 		incomePane.add(addIncomeItemLbl, gbConst);
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 1;
 		gbConst.gridwidth = 1;
-		gbConst.insets = new Insets(10,20,20,15);
-		nameIncomeLbl.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.insets = new Insets(10,20,30,30);
+		nameIncomeLbl.setFont(new Font(null, Font.PLAIN, 32));
 		incomePane.add(nameIncomeLbl, gbConst);
 
 		gbConst.gridx = 1;
 		gbConst.gridy = 1;
-		gbConst.insets = new Insets(10,10,20,30);
-		nameIncField.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.insets = new Insets(10,10,30,30);
+		nameIncField.setFont(new Font(null, Font.PLAIN, 28));
 		incomePane.add(nameIncField, gbConst);
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 2;
 		gbConst.gridwidth = 1;
-		gbConst.insets = new Insets(10,20,20,15);
-		amountIncomeLbl.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.insets = new Insets(10,20,30,30);
+		amountIncomeLbl.setFont(new Font(null, Font.PLAIN, 32));
 		incomePane.add(amountIncomeLbl, gbConst);
 
 		gbConst.gridx = 1;
 		gbConst.gridy = 2;
-		gbConst.insets = new Insets(10,10,20,30);
-		amountIncField.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.insets = new Insets(10,10,30,30);
+		amountIncField.setFont(new Font(null, Font.PLAIN, 28));
 		incomePane.add(amountIncField, gbConst);
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 3;
 		gbConst.gridwidth = 1;
-		gbConst.insets = new Insets(10,20,20,5);
-		frequencyIncomeLbl.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.insets = new Insets(10,20,30,30);
+		frequencyIncomeLbl.setFont(new Font(null, Font.PLAIN, 32));
 		incomePane.add(frequencyIncomeLbl, gbConst);
 
 		gbConst.gridx = 1;
 		gbConst.gridy = 3;
-		gbConst.insets = new Insets(10,10,20,30);
-		frequencyIncField.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.insets = new Insets(10,10,30,30);
+		frequencyIncField.setFont(new Font(null, Font.PLAIN, 28));
 		incomePane.add(frequencyIncField, gbConst);
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 4;
 		gbConst.gridwidth = 2;
-		gbConst.insets = new Insets(10,10,20,30);
-		addIncomeButton.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.insets = new Insets(20,30,30,30);
+		addIncomeButton.setFont(new Font(null, Font.PLAIN, 28));
+		addIncomeButton.setPreferredSize(new Dimension(150,60));
 		incomePane.add(addIncomeButton, gbConst);
 
 		addIncomeButton.addActionListener(new ActionListener() {
@@ -480,54 +487,55 @@ class addItemPanel extends JTabbedPane {
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 0;
-		gbConst.insets = new Insets(0,20,20,20);
-		addExpenseItemLbl.setFont(new Font(null, Font.PLAIN, 32));
+		gbConst.insets = new Insets(0,20,60,30);
+		addExpenseItemLbl.setFont(new Font(null, Font.PLAIN, 44));
 		expensePane.add(addExpenseItemLbl, gbConst);
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 1;
 		gbConst.gridwidth = 1;
-		gbConst.insets = new Insets(10,20,20,25);
-		nameExpenseLbl.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.insets = new Insets(10,20,30,30);
+		nameExpenseLbl.setFont(new Font(null, Font.PLAIN, 32));
 		expensePane.add(nameExpenseLbl, gbConst);
 
 		gbConst.gridx = 1;
 		gbConst.gridy = 1;
-		gbConst.insets = new Insets(10,10,20,30);
-		nameExpField.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.insets = new Insets(10,10,30,30);
+		nameExpField.setFont(new Font(null, Font.PLAIN, 28));
 		expensePane.add(nameExpField, gbConst);
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 2;
 		gbConst.gridwidth = 1;
-		gbConst.insets = new Insets(10,20,20,25);
-		amountExpenseLbl.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.insets = new Insets(10,20,30,30);
+		amountExpenseLbl.setFont(new Font(null, Font.PLAIN, 32));
 		expensePane.add(amountExpenseLbl, gbConst);
 
 		gbConst.gridx = 1;
 		gbConst.gridy = 2;
-		gbConst.insets = new Insets(10,10,20,30);
-		amountExpField.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.insets = new Insets(10,10,30,30);
+		amountExpField.setFont(new Font(null, Font.PLAIN, 28));
 		expensePane.add(amountExpField, gbConst);
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 3;
 		gbConst.gridwidth = 1;
-		gbConst.insets = new Insets(10,20,20,25);
-		monthExpenseLbl.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.insets = new Insets(10,20,30,30);
+		monthExpenseLbl.setFont(new Font(null, Font.PLAIN, 32));
 		expensePane.add(monthExpenseLbl, gbConst);
 
 		gbConst.gridx = 1;
 		gbConst.gridy = 3;
-		gbConst.insets = new Insets(10,10,20,30);
-		monthExpField.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.insets = new Insets(10,10,30,30);
+		monthExpField.setFont(new Font(null, Font.PLAIN, 28));
 		expensePane.add(monthExpField, gbConst);
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 4;
 		gbConst.gridwidth = 2;
-		gbConst.insets = new Insets(10,10,20,30);
-		addExpenseButton.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.insets = new Insets(20,30,30,30);
+		addExpenseButton.setFont(new Font(null, Font.PLAIN, 28));
+		addExpenseButton.setPreferredSize(new Dimension(150,60));
 		expensePane.add(addExpenseButton, gbConst);
 
 		addExpenseButton.addActionListener(new ActionListener() {
@@ -543,7 +551,7 @@ class addItemPanel extends JTabbedPane {
 		});
 
 		this.add("Add Expense", expensePane);
-		this.setFont(new Font(null, Font.PLAIN, 20));
+		this.setFont(new Font(null, Font.PLAIN, 24));
 	}
 }
 
