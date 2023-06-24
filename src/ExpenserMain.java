@@ -4,6 +4,11 @@ public class ExpenserMain implements Expenser {
 	// Add Expense feature
 	@Override
 	public void addExpense (Expense Ex) {
+		Expense Exp = new Expense();
+		
+		Exp.addSource();
+		Exp.addAmount();
+		Exp.addFrequency();
 		
 	}
 	
