@@ -1,5 +1,8 @@
 
+
+
 public class ExpenserMain implements Expenser {
+	public User userAtHand = null;
 	
 	// Add Expense feature
 	@Override
