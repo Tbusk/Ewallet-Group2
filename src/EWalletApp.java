@@ -26,7 +26,7 @@ public class EWalletApp {
 	 */
 	public void CreateUser(String username, String password) {
 
-		if (checkForRepeatUsernames(username) == false && isComplexPassword(password)) { // If there are no repeat usernames and password is valid, a new account will be created and stored.
+		if (!checkForRepeatUsernames(username) && isComplexPassword(password)) { // If there are no repeat usernames and password is valid, a new account will be created and stored.
 			User user = new User(username, password);
 			AllData.add(user);
 
@@ -40,8 +40,6 @@ public class EWalletApp {
 				printWriter.close();
 
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -58,9 +56,9 @@ public class EWalletApp {
 			Scanner scnr = new Scanner(fileInputStream);
 
 			Path path = Paths.get("src/UserCredentials.csv");
-			Long lines = Files.lines(path).count(); // Counts lines in UserCredentials.csv
-			String textAtLine = "";
-			String readUsername = "";
+			long lines = Files.lines(path).count(); // Counts lines in UserCredentials.csv
+			String textAtLine;
+			String readUsername;
 			if(lines < 1) { // Checks if file is empty
 				System.out.println("There is no data in file.");
 			} else {
@@ -130,19 +128,23 @@ public class EWalletApp {
 
 }
 
+/**
+ * appFrame is a class that makes up ewallet's GUI frame.  It contains a JMenu with options to navigate
+ * between the different features of the app by utilizing a CardLayout while clearing and setting a panel when navigating between the pages.
+ */
 class appFrame extends JFrame {
 
 	static User user; // temporary - until login is set up.
 	JMenuBar navMenuBar;
 	JMenu navMenu;
-	JMenuItem homeNav, addItemNav, importNav, estimateNav, incomeReportNav, expenseReportNav, detailedReportNav;
+	JMenuItem homeNav, addItemNav, importNav, estimateNav, incomeReportNav, expenseReportNav, detailedReportNav; // different pages
 
 	appFrame(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setMinimumSize(new Dimension(600,700));
 		this.setTitle("EWallet Application");
 
-		user = new User("Kevin", "Abc!1234");
+		user = new User("Kevin", "Abc!1234"); // temporary solution until login is set up
 		homePanel hPanel = new homePanel();
 		addItemPanel addItmPanel = new addItemPanel();
 		importPanel impPanel = new importPanel();
@@ -150,11 +152,12 @@ class appFrame extends JFrame {
 		incomeRepPanel incRepPanel = new incomeRepPanel();
 		expenseRepPanel expRepPanel = new expenseRepPanel();
 		detailedRepPanel detRepPanel = new detailedRepPanel();
-		getContentPane().add(hPanel);
+		getContentPane().add(hPanel); // setting default page
 		navMenuBar = new JMenuBar();
-		navMenu = new JMenu("<html><p style='margin-left:20'>Menu");
-		homeNav = new JMenuItem("<html><p style='margin-left:15'>Home");
+		navMenu = new JMenu("<html><p style='margin-left:20'>Menu"); // Menu
+		homeNav = new JMenuItem("<html><p style='margin-left:15'>Home"); // Home Page
 		homeNav.addMouseListener(new MouseAdapter() {
+			// once the page is clicked and released, it will be displayed, while discarding previous jpanel instead of storing it
 			@Override
 			public void mousePressed(MouseEvent e) {
 
@@ -172,8 +175,9 @@ class appFrame extends JFrame {
 				repaint();
 			}
 		});
-		addItemNav = new JMenuItem("<html><p style='margin-left:15'>Add Item");
+		addItemNav = new JMenuItem("<html><p style='margin-left:15'>Add Item"); // Add Items Page
 		addItemNav.addMouseListener(new MouseAdapter() {
+			// once the page is clicked and released, it will be displayed while discarding previous JPanel instead of storing it
 			@Override
 			public void mousePressed(MouseEvent e) {
 
@@ -192,8 +196,9 @@ class appFrame extends JFrame {
 			}
 		});
 
-		importNav = new JMenuItem("<html><p style='margin-left:15'>Import Tool");
+		importNav = new JMenuItem("<html><p style='margin-left:15'>Import Tool"); // Import Page
 		importNav.addMouseListener(new MouseAdapter() {
+			// once the page is clicked and released, it will be displayed, while discarding previous jpanel instead of storing it
 			@Override
 			public void mousePressed(MouseEvent e) {
 				super.mouseClicked(e);
@@ -210,8 +215,9 @@ class appFrame extends JFrame {
 				repaint();
 			}
 		});
-		estimateNav = new JMenuItem("<html><p style='margin-left:15'>Estimate Tool");
+		estimateNav = new JMenuItem("<html><p style='margin-left:15'>Estimate Tool"); // Estimate Page
 		estimateNav.addMouseListener(new MouseAdapter() {
+			// once the page is clicked and released, it will be displayed, while discarding previous jpanel instead of storing it
 			@Override
 			public void mousePressed(MouseEvent e) {
 
@@ -229,8 +235,9 @@ class appFrame extends JFrame {
 				repaint();
 			}
 		});
-		incomeReportNav = new JMenuItem("<html><p style='margin-left:15'>Income Report");
+		incomeReportNav = new JMenuItem("<html><p style='margin-left:15'>Income Report"); // Income Report Page
 		incomeReportNav.addMouseListener(new MouseAdapter() {
+			// once the page is clicked and released, it will be displayed, while discarding previous jpanel instead of storing it
 			@Override
 			public void mousePressed(MouseEvent e) {
 
@@ -248,8 +255,9 @@ class appFrame extends JFrame {
 				repaint();
 			}
 		});
-		expenseReportNav = new JMenuItem("<html><p style='margin-left:15'>Expense Report");
+		expenseReportNav = new JMenuItem("<html><p style='margin-left:15'>Expense Report"); // Expense Report Page
 		expenseReportNav.addMouseListener(new MouseAdapter() {
+			// once the page is clicked and released, it will be displayed, while discarding previous jpanel instead of storing it
 			@Override
 			public void mousePressed(MouseEvent e) {
 
@@ -267,8 +275,9 @@ class appFrame extends JFrame {
 				repaint();
 			}
 		});
-		detailedReportNav = new JMenuItem("<html><p style='margin-left:15'>Detailed Report");
+		detailedReportNav = new JMenuItem("<html><p style='margin-left:15'>Detailed Report"); // Detailed Report Page
 		detailedReportNav.addMouseListener(new MouseAdapter() {
+			// once the page is clicked and released, it will be displayed, while discarding previous jpanel instead of storing it
 			@Override
 			public void mousePressed(MouseEvent e) {
 
@@ -287,6 +296,7 @@ class appFrame extends JFrame {
 			}
 		});
 
+		// Updating font size of menu and menu items
 		navMenu.setFont(new Font(null, Font.PLAIN, 24));
 		homeNav.setFont(new Font(null, Font.PLAIN, 20));
 		addItemNav.setFont(new Font(null, Font.PLAIN, 20));
@@ -296,6 +306,7 @@ class appFrame extends JFrame {
 		expenseReportNav.setFont(new Font(null, Font.PLAIN, 20));
 		detailedReportNav.setFont(new Font(null, Font.PLAIN, 20));
 
+		// Adding items to the navigation menu
 		navMenu.add(homeNav);
 		navMenu.add(addItemNav);
 		navMenu.add(importNav);
@@ -312,6 +323,10 @@ class appFrame extends JFrame {
 	}
 }
 
+/**
+ * homePanel is a class that makes up ewallet's GUI home page.  It contains basic total information like total income,
+ * total expenses, and savings.
+ */
 class homePanel extends JPanel {
 
 	JLabel summaryTxt, totalIncomeLbl ,totalExpensesLbl, totalSavingsLbl;
@@ -375,6 +390,10 @@ class homePanel extends JPanel {
 	}
 }
 
+/**
+ * addItemPanel is a class that makes up ewallet's Add Item page. It contains the ability for user to add either an income
+ * or an expense.  Adding items will update the home page as well as the reports pages.
+ */
 class addItemPanel extends JTabbedPane {
 
 	int yearlyFrequency;
@@ -397,12 +416,12 @@ class addItemPanel extends JTabbedPane {
 
 		monthComboBox = new JComboBox<>(months);
 		monthComboBox.setFont(new Font(null,Font.PLAIN, 24));
-		monthComboBox.setSelectedIndex(0);
+		monthComboBox.setSelectedIndex(0); // setting January as default selection
 
 		addIncomeButton = new JButton("Add");
 		addExpenseButton = new JButton("Add");
 
-		gbConst = new GridBagConstraints();
+		gbConst = new GridBagConstraints(); // defining layout managers
 		incomePane.setLayout(new GridBagLayout());
 		expensePane.setLayout(new GridBagLayout());
 
@@ -483,6 +502,11 @@ class addItemPanel extends JTabbedPane {
 		addIncomeButton.setPreferredSize(new Dimension(150,60));
 		incomePane.add(addIncomeButton, gbConst);
 
+		/*
+		 * When the add income button is pressed, if there is text in the name and amount field,
+		 * the data will be retrieved and put into a wage variable as well as updating both the home table, the item report table
+		 * and the detailed report table.
+		 */
 		addIncomeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -497,7 +521,7 @@ class addItemPanel extends JTabbedPane {
 						source = nameIncField.getText();
 						month = String.valueOf(monthComboBox.getItemAt(monthComboBox.getSelectedIndex()));
 						Wage w = new Wage(source, amount, month);
-						appFrame.user.addMonthlyIncome(w);
+						appFrame.user.addMonthlyIncome(w); // adding it to the user's wage arraylist
 						nameIncField.setText("");
 						monthComboBox.setSelectedItem(0);
 						amountIncField.setText("");
@@ -506,8 +530,8 @@ class addItemPanel extends JTabbedPane {
 						appFrame.user.setBalance(appFrame.user.getBalance() + w.getAmount());
 						homePanel.totalIncomeAmtLbl.setText("$" + String.format("%.2f",appFrame.user.getBalance()));
 
-						// update table
-						incomeRepPanel.model.addRow(new Object[]{});
+						// update income table
+						incomeRepPanel.model.addRow(new Object[]{}); // adding a blank row in the table
 						int i = 0;
 						for(Wage wage : appFrame.user.getIncome()) {
 							incomeRepPanel.incomeTable.setValueAt(wage.getSource(), i, 0);
@@ -516,9 +540,9 @@ class addItemPanel extends JTabbedPane {
 							++i;
 						}
 
-						// update detailed table
+						// update detailed table by filling it in with wage and expense data
 						int j = 0;
-						detailedRepPanel.model.addRow(new Object[]{});
+						detailedRepPanel.model.addRow(new Object[]{}); // adding a blank row in the table
 						for(Wage wge : appFrame.user.getIncome()) {
 							detailedRepPanel.detailedTable.setValueAt("Income", j, 0);
 							detailedRepPanel.detailedTable.setValueAt(wge.getSource(), j, 1);
@@ -595,6 +619,12 @@ class addItemPanel extends JTabbedPane {
 		addExpenseButton.setPreferredSize(new Dimension(150,60));
 		expensePane.add(addExpenseButton, gbConst);
 
+
+		/*
+		 * When the add expense button is pressed, if there is text in the name, amount, and frequency field,
+		 * the data will be retrieved and put into an expense variable as well as updating both the home table, the expense report table
+		 * and the detailed report table.
+		 */
 		addExpenseButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -609,12 +639,12 @@ class addItemPanel extends JTabbedPane {
 							amount = 0.00f;
 						}
 						source = nameExpField.getText();
-						Expense Ex = new Expense(source, amount, yearlyFrequency);
-						appFrame.user.addExpense(Ex);
+						Expense Ex = new Expense(source, amount, yearlyFrequency); // new expense object
+						appFrame.user.addExpense(Ex); // adding it to the user's spending arraylist
 
 						// update expense table and expenses on home
 						appFrame.user.setExpenses(0.00f);
-						expenseRepPanel.model.addRow(new Object[]{});
+						expenseRepPanel.model.addRow(new Object[]{}); // adding a blank row in the table
 						int i = 0;
 						for(Expense Exp : appFrame.user.getSpending()) {
 							appFrame.user.setExpenses(appFrame.user.getExpenses() + Exp.amount);
@@ -625,9 +655,9 @@ class addItemPanel extends JTabbedPane {
 						}
 						homePanel.totalExpensesAmtLbl.setText("$" + String.format("%.2f",appFrame.user.getExpenses()));
 
-						// update detailed table
+						// update detailed table by filling it in with wage and expense data
 						i = 0;
-						detailedRepPanel.model.addRow(new Object[]{});
+						detailedRepPanel.model.addRow(new Object[]{}); // adding a blank row in the table
 						for(Expense Exp : appFrame.user.getSpending()) {
 							detailedRepPanel.detailedTable.setValueAt("Expense", i, 0);
 							detailedRepPanel.detailedTable.setValueAt(Exp.getSource(), i, 1);
@@ -644,6 +674,7 @@ class addItemPanel extends JTabbedPane {
 							++i;
 						}
 
+						// Clearing fields
 						nameExpField.setText("");
 						frequencyExpField.setText("");
 						amountExpField.setText("");
@@ -657,22 +688,28 @@ class addItemPanel extends JTabbedPane {
 	}
 }
 
+/**
+ * importPanel is a class that makes up ewallet's import page.  It contains the ability for the user to import data from a csv file.
+ * This will be completed in Sprint 2.
+ */
 class importPanel extends JPanel {
 
 	GridBagConstraints gbConst;
 	JLabel importLbl, selectFileLbl, selectTypeLbl, descriptionLbl;
 	JButton selectFileButton, importButton;
 	JFileChooser fileChooser;
-	String typesOfImports[];
+	String[] typesOfImports;
 	JComboBox<String> options;
 	File userFile;
 	importPanel() {
 
+		fileChooser = new JFileChooser();
+
 		this.setLayout(new GridBagLayout());
 		gbConst = new GridBagConstraints();
 		typesOfImports = new String[] {"Income","Expense"};
-		options = new JComboBox<>(typesOfImports);
-		options.setSelectedIndex(0);
+		options = new JComboBox<>(typesOfImports); // combo box for selecting which type to input to
+		options.setSelectedIndex(0); // sets Income as initial selection
 
 		importLbl = new JLabel("Import From File");
 		gbConst.gridx = 0;
@@ -685,13 +722,13 @@ class importPanel extends JPanel {
 		selectFileButton = new JButton("File");
 		selectFileButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) { // File chooser component
 				if (e.getSource() == selectFileButton) {
-					int userDecision = fileChooser.showOpenDialog(null);
-					if(userDecision == JFileChooser.APPROVE_OPTION) {
+					int userDecision = fileChooser.showOpenDialog(null); // opens file chooser window
+					if(userDecision == JFileChooser.APPROVE_OPTION) { // if file is selected
 						userFile = fileChooser.getSelectedFile();
 						System.out.println("The user selected: " + userFile.getAbsolutePath());
-					} else if (userDecision == JFileChooser.CANCEL_OPTION) {
+					} else if (userDecision == JFileChooser.CANCEL_OPTION) { // if user backs out
 						System.out.println("The user canceled the operation.");
 					}
 				}
@@ -742,12 +779,13 @@ class importPanel extends JPanel {
 		importButton.setFont(new Font(null, Font.PLAIN, 24));
 		this.add(importButton, gbConst);
 
-		fileChooser = new JFileChooser();
-
-
 	}
 }
 
+/**
+ * estimatePanel is a class that makes up ewallet's estimate page. It contains the ability for the user to estimate how long it
+ * will take for a user to save up for an item based on stored income and expense information.
+ */
 class estimatePanel extends JPanel {
 	GridBagConstraints gbConst;
 	JLabel estimateTitleLbl, nameLbl, priceLbl, estimateLbl, estimateAmtLbl;
@@ -812,6 +850,7 @@ class estimatePanel extends JPanel {
 
 		estimateButton = new JButton("Get Estimate");
 		estimateButton.addActionListener(new ActionListener() {
+			// Will retrieve estimate information.  Scheduled for Sprint 2.
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(e.getSource() == estimateButton) {
@@ -832,13 +871,16 @@ class estimatePanel extends JPanel {
 	}
 }
 
+/**
+ * incomeRepPanel is a class that makes up ewallet's income report page.  It shows basic income report information like all
+ * income information and will contain the ability to filter data by month or type.
+ */
 class incomeRepPanel extends JPanel {
 	static DefaultTableModel model;
 	DefaultTableCellRenderer centerRenderer;
 	static JScrollPane jScrollPane;
-	static int arraySize;
 	ArrayList<Wage> Income;
-	Object[][] tableVals;
+	Object[][] tableVals; // table values
 	String[] columnHeadings;
 	static JTable incomeTable;
 	JLabel incomeText;
@@ -852,21 +894,23 @@ class incomeRepPanel extends JPanel {
 		this.add(incomeText, BorderLayout.PAGE_START);
 		centerRenderer = new DefaultTableCellRenderer();
 		columnHeadings = new String[]{"Source","Amount", "Month"};
-		Income = appFrame.user.getIncome();
-		tableVals = new Object[Income.size()][3];
-		model = new DefaultTableModel(tableVals, columnHeadings);
+		Income = appFrame.user.getIncome(); // retrieving income data
+		tableVals = new Object[Income.size()][3]; // creating table with 3 columns and as many rows as there are data in Income arraylist
+		model = new DefaultTableModel(tableVals, columnHeadings); // setting up table model
 		incomeTable = new JTable(model) {
-			public boolean isCellEditable(int row, int column) {
+			public boolean isCellEditable(int row, int column) { // restricting cell editing
 				return false;
 			}
 		};
 		jScrollPane = new JScrollPane(incomeTable);
 
+		// Centering items in table cells
 		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 		for (int i = 0; i < incomeTable.getColumnCount(); i++) {
 			incomeTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 		}
 		incomeTable.setDefaultRenderer(String.class, centerRenderer);
+
 		incomeTable.setFont(new Font(null, Font.PLAIN, 24));
 		incomeTable.setRowHeight(45);
 		incomeTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -883,6 +927,7 @@ class incomeRepPanel extends JPanel {
 		exportReport.setSize(new Dimension(200,60));
 		exportReport.setFont(new Font(null, Font.PLAIN, 24));
 
+		// Creating centered button in bottom part of border layout
 		JPanel lowerPanel = new JPanel();
 		lowerPanel.add(Box.createRigidArea(new Dimension(25,50)));
 		lowerPanel.add(exportReport, BorderLayout.CENTER);
@@ -892,11 +937,14 @@ class incomeRepPanel extends JPanel {
 	}
 }
 
+/**
+ * expenseRepPanel is a class that makes up ewallet's expense report page.  It shows basic expense report information like all
+ * expense information and will contain the ability to filter data by month or type.
+ */
 class expenseRepPanel extends JPanel {
 	static DefaultTableModel model;
 	DefaultTableCellRenderer centerRenderer;
 	static JScrollPane jScrollPane;
-	static int arraySize;
 	ArrayList<Expense> Spending;
 	Object[][] tableVals;
 	String[] columnHeadings;
@@ -912,20 +960,22 @@ class expenseRepPanel extends JPanel {
 		centerRenderer = new DefaultTableCellRenderer();
 		columnHeadings = new String[]{"Source","Amount", "Frequency"};
 		Spending = appFrame.user.getSpending();
-		tableVals = new Object[Spending.size()][3];
-		model = new DefaultTableModel(tableVals, columnHeadings);
+		tableVals = new Object[Spending.size()][3]; // creating table with 3 columns and as many rows as there are data in Spending arraylist
+		model = new DefaultTableModel(tableVals, columnHeadings); // setting up table model
 		spendingTable = new JTable(model) {
-			public boolean isCellEditable(int row, int column) {
+			public boolean isCellEditable(int row, int column) { // restricting cell editing
 				return false;
 			}
 		};
 		jScrollPane = new JScrollPane(spendingTable);
 
+		// Centering items in table cells
 		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 		for (int i = 0; i < spendingTable.getColumnCount(); i++) {
 			spendingTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 		}
 		spendingTable.setDefaultRenderer(String.class, centerRenderer);
+
 		spendingTable.setFont(new Font(null, Font.PLAIN, 24));
 		spendingTable.setRowHeight(45);
 		spendingTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -942,6 +992,7 @@ class expenseRepPanel extends JPanel {
 		exportReport.setSize(new Dimension(200,60));
 		exportReport.setFont(new Font(null, Font.PLAIN, 24));
 
+		// Creating centered button in bottom part of border layout
 		JPanel lowerPanel = new JPanel();
 		lowerPanel.add(Box.createRigidArea(new Dimension(25,50)));
 		lowerPanel.add(exportReport, BorderLayout.CENTER);
@@ -951,11 +1002,14 @@ class expenseRepPanel extends JPanel {
 	}
 }
 
+/**
+ * detailedRepPanel is a class that makes up ewallet's detailed report page.  It shows basic income and expense report information like all
+ * expense and income information and will contain the ability to filter data by month or type.
+ */
 class detailedRepPanel extends JPanel {
 	static DefaultTableModel model;
 	DefaultTableCellRenderer centerRenderer;
 	static JScrollPane jScrollPane;
-	static int arraySize;
 	ArrayList<Expense> Spending;
 	ArrayList<Wage> Income;
 	Object[][] tableVals;
@@ -975,19 +1029,21 @@ class detailedRepPanel extends JPanel {
 		Spending = appFrame.user.getSpending();
 		Income = appFrame.user.getIncome();
 		tableVals = new Object[Spending.size()+Income.size()][4];
-		model = new DefaultTableModel(tableVals, columnHeadings);
+		model = new DefaultTableModel(tableVals, columnHeadings); // setting up table model
 		detailedTable = new JTable(model) {
-			public boolean isCellEditable(int row, int column) {
+			public boolean isCellEditable(int row, int column) { // restricting cell editing
 				return false;
 			}
 		};
 		jScrollPane = new JScrollPane(detailedTable);
 
+		// Centering items in table cells
 		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 		for (int i = 0; i < detailedTable.getColumnCount(); i++) {
 			detailedTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 		}
 		detailedTable.setDefaultRenderer(String.class, centerRenderer);
+
 		detailedTable.setFont(new Font(null, Font.PLAIN, 24));
 		detailedTable.setRowHeight(45);
 		detailedTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -1004,6 +1060,7 @@ class detailedRepPanel extends JPanel {
 		exportReport.setSize(new Dimension(200,60));
 		exportReport.setFont(new Font(null, Font.PLAIN, 24));
 
+		// Creating centered button in bottom part of border layout
 		JPanel lowerPanel = new JPanel();
 		lowerPanel.add(Box.createRigidArea(new Dimension(25,50)));
 		lowerPanel.add(exportReport, BorderLayout.CENTER);
