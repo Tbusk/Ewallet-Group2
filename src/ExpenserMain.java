@@ -8,7 +8,6 @@ public class ExpenserMain implements Expenser {
 	@Override
 	public void addExpense (Expense Ex) {
 		
-
 	}
 	
 	// Add Monthly Income feature

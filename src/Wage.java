@@ -20,23 +20,23 @@ public class Wage {
 	 * Method responsible for getting the wage's source
 	 * @param source user's source of the wage
 	 */
-	public void getSource(String source) {
-		this.source = source;
+	public String getSource(String source) {
+		return this.source;
 	}
 	
 	/**
 	 * Method responsible for getting the wage's amount
 	 * @param amount user's amount of the wage
 	 */
-	public void getAmount(double amount) {
-		this.amount = amount;
+	public double getAmount(double amount) {
+		return this.amount;
 	}
 	
 	/**
 	 * Method responsible for getting the month in which the wage was received
 	 * @param Month the month in which the user received the wage
 	 */
-	public void getMonth(String Month) {
-		this.Month = Month;
+	public String getMonth(String Month) {
+		return this.Month;
 	}
 }

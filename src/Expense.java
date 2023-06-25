@@ -1,10 +1,8 @@
-import java.util.Scanner;
 
 /**
  * A class for calculating the user's expenses
  */
 public class Expense {
-	Scanner scnr = new Scanner(System.in);
 	String source;
 	double amount;
 	int yearlyfrequency; //1 for 1 time or once a year, 12 for monthly or or 24 for biweekly
@@ -25,24 +23,24 @@ public class Expense {
 	 * Method responsible for getting the source of the expense
 	 * @param source user's source of the expense
 	 */
-	public void getSource(String source) {
-		this.source = source;
+	public String getSource(String source) {
+		return this.source;
 	}
 	
 	/**
 	 * Method responsible for getting the amount of the expense
 	 * @param amount user's amount of expense
 	 */
-	public void getAmount(Double amount) {
-		this.amount = amount;
+	public double getAmount(Double amount) {
+		return this.amount;
 	}
 	
 	/**
 	 * Method responsible for getting the frequency of the expense
 	 * @param yearlyfrequency user's frequency of expense
 	 */
-	public void getFrequency(int yearlyfrequency) {
-		this.yearlyfrequency = yearlyfrequency;
+	public int getFrequency(int yearlyfrequency) {
+		return this.yearlyfrequency;
 	}
 
 }
