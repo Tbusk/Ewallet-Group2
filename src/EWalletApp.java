@@ -135,6 +135,7 @@ public class EWalletApp {
 class appFrame extends JFrame {
 
 	static User user; // temporary - until login is set up.
+	ExpenserMain expenserMain;
 	JMenuBar navMenuBar;
 	JMenu navMenu;
 	JMenuItem homeNav, addItemNav, importNav, estimateNav, incomeReportNav, expenseReportNav, detailedReportNav; // different pages
@@ -145,6 +146,9 @@ class appFrame extends JFrame {
 		this.setTitle("EWallet Application");
 
 		user = new User("Kevin", "Abc!1234"); // temporary solution until login is set up
+		expenserMain = new ExpenserMain();
+		expenserMain.userAtHand = user;
+
 		homePanel hPanel = new homePanel();
 		addItemPanel addItmPanel = new addItemPanel();
 		importPanel impPanel = new importPanel();
@@ -396,6 +400,7 @@ class homePanel extends JPanel {
  */
 class addItemPanel extends JTabbedPane {
 
+	ExpenserMain expenserMain;
 	int yearlyFrequency;
 	double amount;
 	String month, source;
@@ -410,6 +415,10 @@ class addItemPanel extends JTabbedPane {
 	JComboBox monthComboBox;
 	String[] months;
 	addItemPanel() {
+
+		expenserMain = new ExpenserMain();
+		expenserMain.userAtHand = appFrame.user;
+
 		months = new String[]{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 		incomePane = new JPanel();
 		expensePane = new JPanel();
@@ -521,19 +530,21 @@ class addItemPanel extends JTabbedPane {
 						source = nameIncField.getText();
 						month = String.valueOf(monthComboBox.getItemAt(monthComboBox.getSelectedIndex()));
 						Wage w = new Wage(source, amount, month);
-						appFrame.user.addMonthlyIncome(w); // adding it to the user's wage arraylist
+						expenserMain.userAtHand.addMonthlyIncome(w); // adding it to the user's wage arraylist
 						nameIncField.setText("");
 						monthComboBox.setSelectedItem(0);
 						amountIncField.setText("");
 
 						// Update Home Income
-						appFrame.user.setBalance(appFrame.user.getBalance() + w.getAmount());
-						homePanel.totalIncomeAmtLbl.setText("$" + String.format("%.2f",appFrame.user.getBalance()));
+						expenserMain.userAtHand.setBalance(expenserMain.userAtHand.getBalance() + w.getAmount());
+						expenserMain.updateMonthlySavings();
+						homePanel.totalIncomeAmtLbl.setText("$" + String.format("%.2f",expenserMain.userAtHand.getBalance()));
+						homePanel.totalSavingsAmtLbl.setText("$" + String.format("%.2f", expenserMain.userAtHand.getMonthlySavings()));
 
 						// update income table
 						incomeRepPanel.model.addRow(new Object[]{}); // adding a blank row in the table
 						int i = 0;
-						for(Wage wage : appFrame.user.getIncome()) {
+						for(Wage wage : expenserMain.userAtHand.getIncome()) {
 							incomeRepPanel.incomeTable.setValueAt(wage.getSource(), i, 0);
 							incomeRepPanel.incomeTable.setValueAt(String.format("$%.2f",wage.getAmount()), i, 1);
 							incomeRepPanel.incomeTable.setValueAt(wage.getMonth(), i, 2);
@@ -543,7 +554,7 @@ class addItemPanel extends JTabbedPane {
 						// update detailed table by filling it in with wage and expense data
 						int j = 0;
 						detailedRepPanel.model.addRow(new Object[]{}); // adding a blank row in the table
-						for(Wage wge : appFrame.user.getIncome()) {
+						for(Wage wge : expenserMain.userAtHand.getIncome()) {
 							detailedRepPanel.detailedTable.setValueAt("Income", j, 0);
 							detailedRepPanel.detailedTable.setValueAt(wge.getSource(), j, 1);
 							detailedRepPanel.detailedTable.setValueAt(String.format("$%.2f",wge.getAmount()), j, 2);
@@ -551,7 +562,7 @@ class addItemPanel extends JTabbedPane {
 							++j;
 						}
 
-						for(Expense Ex : appFrame.user.getSpending()) {
+						for(Expense Ex : expenserMain.userAtHand.getSpending()) {
 							detailedRepPanel.detailedTable.setValueAt("Expense", j, 0);
 							detailedRepPanel.detailedTable.setValueAt(Ex.getSource(), j, 1);
 							detailedRepPanel.detailedTable.setValueAt(String.format("$%.2f",Ex.getAmount()), j, 2);
@@ -640,25 +651,27 @@ class addItemPanel extends JTabbedPane {
 						}
 						source = nameExpField.getText();
 						Expense Ex = new Expense(source, amount, yearlyFrequency); // new expense object
-						appFrame.user.addExpense(Ex); // adding it to the user's spending arraylist
+						expenserMain.userAtHand.addExpense(Ex); // adding it to the user's spending arraylist
 
 						// update expense table and expenses on home
-						appFrame.user.setExpenses(0.00f);
+						expenserMain.userAtHand.setExpenses(0.00f);
 						expenseRepPanel.model.addRow(new Object[]{}); // adding a blank row in the table
 						int i = 0;
-						for(Expense Exp : appFrame.user.getSpending()) {
-							appFrame.user.setExpenses(appFrame.user.getExpenses() + Exp.amount);
+						for(Expense Exp : expenserMain.userAtHand.getSpending()) {
+							expenserMain.userAtHand.setExpenses(expenserMain.userAtHand.getExpenses() + Exp.amount);
 							expenseRepPanel.spendingTable.setValueAt(Exp.getSource(), i, 0);
 							expenseRepPanel.spendingTable.setValueAt(String.format("$%.2f",Exp.getAmount()), i, 1);
 							expenseRepPanel.spendingTable.setValueAt(Exp.getYearlyfrequency(), i, 2);
 							++i;
 						}
-						homePanel.totalExpensesAmtLbl.setText("$" + String.format("%.2f",appFrame.user.getExpenses()));
+						expenserMain.updateMonthlySavings();
+						homePanel.totalExpensesAmtLbl.setText("$" + String.format("%.2f",expenserMain.userAtHand.getExpenses()));
+						homePanel.totalSavingsAmtLbl.setText("$" + String.format("%.2f", expenserMain.userAtHand.getMonthlySavings()));
 
 						// update detailed table by filling it in with wage and expense data
 						i = 0;
 						detailedRepPanel.model.addRow(new Object[]{}); // adding a blank row in the table
-						for(Expense Exp : appFrame.user.getSpending()) {
+						for(Expense Exp : expenserMain.userAtHand.getSpending()) {
 							detailedRepPanel.detailedTable.setValueAt("Expense", i, 0);
 							detailedRepPanel.detailedTable.setValueAt(Exp.getSource(), i, 1);
 							detailedRepPanel.detailedTable.setValueAt(String.format("$%.2f",Exp.getAmount()), i, 2);
@@ -666,7 +679,7 @@ class addItemPanel extends JTabbedPane {
 							++i;
 						}
 
-						for(Wage wage : appFrame.user.getIncome()) {
+						for(Wage wage : expenserMain.userAtHand.getIncome()) {
 							detailedRepPanel.detailedTable.setValueAt("Income", i, 0);
 							detailedRepPanel.detailedTable.setValueAt(wage.getSource(), i, 1);
 							detailedRepPanel.detailedTable.setValueAt(String.format("$%.2f",wage.getAmount()), i, 2);
@@ -885,7 +898,11 @@ class incomeRepPanel extends JPanel {
 	static JTable incomeTable;
 	JLabel incomeText;
 	JButton exportReport;
+	ExpenserMain expenserMain;
 	incomeRepPanel() {
+
+		expenserMain = new ExpenserMain();
+		expenserMain.userAtHand = appFrame.user;
 
 		this.setLayout(new BorderLayout());
 		incomeText = new JLabel("Income Report");
@@ -894,7 +911,7 @@ class incomeRepPanel extends JPanel {
 		this.add(incomeText, BorderLayout.PAGE_START);
 		centerRenderer = new DefaultTableCellRenderer();
 		columnHeadings = new String[]{"Source","Amount", "Month"};
-		Income = appFrame.user.getIncome(); // retrieving income data
+		Income = expenserMain.userAtHand.getIncome(); // retrieving income data
 		tableVals = new Object[Income.size()][3]; // creating table with 3 columns and as many rows as there are data in Income arraylist
 		model = new DefaultTableModel(tableVals, columnHeadings); // setting up table model
 		incomeTable = new JTable(model) {
@@ -951,7 +968,11 @@ class expenseRepPanel extends JPanel {
 	static JTable spendingTable;
 	JLabel expenseText;
 	JButton exportReport;
+	ExpenserMain expenserMain;
 	expenseRepPanel() {
+		expenserMain = new ExpenserMain();
+		expenserMain.userAtHand = appFrame.user;
+
 		this.setLayout(new BorderLayout());
 		expenseText = new JLabel("Expense Report");
 		expenseText.setFont(new Font(null, Font.PLAIN, 40));
@@ -959,7 +980,7 @@ class expenseRepPanel extends JPanel {
 		this.add(expenseText, BorderLayout.PAGE_START);
 		centerRenderer = new DefaultTableCellRenderer();
 		columnHeadings = new String[]{"Source","Amount", "Frequency"};
-		Spending = appFrame.user.getSpending();
+		Spending = expenserMain.userAtHand.getSpending();
 		tableVals = new Object[Spending.size()][3]; // creating table with 3 columns and as many rows as there are data in Spending arraylist
 		model = new DefaultTableModel(tableVals, columnHeadings); // setting up table model
 		spendingTable = new JTable(model) {
@@ -1017,7 +1038,11 @@ class detailedRepPanel extends JPanel {
 	static JTable detailedTable;
 	JLabel detaileReportTxt;
 	JButton exportReport;
+	ExpenserMain expenserMain;
 	detailedRepPanel() {
+
+		expenserMain = new ExpenserMain();
+		expenserMain.userAtHand = appFrame.user;
 
 		this.setLayout(new BorderLayout());
 		detaileReportTxt = new JLabel("Detailed Report");
@@ -1026,8 +1051,8 @@ class detailedRepPanel extends JPanel {
 		this.add(detaileReportTxt, BorderLayout.PAGE_START);
 		centerRenderer = new DefaultTableCellRenderer();
 		columnHeadings = new String[]{"Type","Source","Amount", "Frequency"};
-		Spending = appFrame.user.getSpending();
-		Income = appFrame.user.getIncome();
+		Spending = expenserMain.userAtHand.getSpending();
+		Income = expenserMain.userAtHand.getIncome();
 		tableVals = new Object[Spending.size()+Income.size()][4];
 		model = new DefaultTableModel(tableVals, columnHeadings); // setting up table model
 		detailedTable = new JTable(model) {
