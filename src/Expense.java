@@ -23,7 +23,7 @@ public class Expense {
 	 * Method responsible for getting the source of the expense
 	 * @param source user's source of the expense
 	 */
-	public String getSource(String source) {
+	public String getSource() {
 		return this.source;
 	}
 	
@@ -31,7 +31,7 @@ public class Expense {
 	 * Method responsible for getting the amount of the expense
 	 * @param amount user's amount of expense
 	 */
-	public double getAmount(Double amount) {
+	public double getAmount() {
 		return this.amount;
 	}
 	
@@ -39,7 +39,7 @@ public class Expense {
 	 * Method responsible for getting the frequency of the expense
 	 * @param yearlyfrequency user's frequency of expense
 	 */
-	public int getFrequency(int yearlyfrequency) {
+	public int getFrequency() {
 		return this.yearlyfrequency;
 	}
 
