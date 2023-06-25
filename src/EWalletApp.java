@@ -386,11 +386,18 @@ class addItemPanel extends JTabbedPane {
 	JLabel nameIncomeLbl, amountIncomeLbl, monthIncomeLbl;
 	JLabel nameExpenseLbl, amountExpenseLbl, frequencyExpLbl;
 	JTextField nameIncField, amountIncField, frequencyExpField;
-	JTextField nameExpField, amountExpField, monthIncField;
+	JTextField nameExpField, amountExpField;
 	JButton addIncomeButton, addExpenseButton;
+	JComboBox monthComboBox;
+	String[] months;
 	addItemPanel() {
+		months = new String[]{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 		incomePane = new JPanel();
 		expensePane = new JPanel();
+
+		monthComboBox = new JComboBox<>(months);
+		monthComboBox.setFont(new Font(null,Font.PLAIN, 24));
+		monthComboBox.setSelectedIndex(0);
 
 		addIncomeButton = new JButton("Add");
 		addExpenseButton = new JButton("Add");
@@ -420,8 +427,7 @@ class addItemPanel extends JTabbedPane {
 		nameExpField.setPreferredSize(new Dimension(280, 50));
 		amountExpField = new JTextField();
 		amountExpField.setPreferredSize(new Dimension(280, 50));
-		monthIncField = new JTextField();
-		monthIncField.setPreferredSize(new Dimension(280, 50));
+		monthComboBox.setPreferredSize(new Dimension(280, 50));
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 0;
@@ -466,8 +472,8 @@ class addItemPanel extends JTabbedPane {
 		gbConst.gridx = 1;
 		gbConst.gridy = 3;
 		gbConst.insets = new Insets(10,10,30,30);
-		monthIncField.setFont(new Font(null, Font.PLAIN, 28));
-		incomePane.add(monthIncField, gbConst);
+		monthComboBox.setFont(new Font(null, Font.PLAIN, 28));
+		incomePane.add(monthComboBox, gbConst);
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 4;
@@ -481,7 +487,7 @@ class addItemPanel extends JTabbedPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(e.getSource() == addIncomeButton) {
-					if(nameIncField.getText().length() > 0 && amountIncField.getText().length() > 0 & monthIncField.getText().length() > 0) {
+					if(nameIncField.getText().length() > 0 && amountIncField.getText().length() > 0) {
 						try {
 							amount = Double.parseDouble(amountIncField.getText());
 						} catch (NumberFormatException n) {
@@ -489,11 +495,11 @@ class addItemPanel extends JTabbedPane {
 							amount = 0.00f;
 						}
 						source = nameIncField.getText();
-						month = monthIncField.getText();
+						month = String.valueOf(monthComboBox.getItemAt(monthComboBox.getSelectedIndex()));
 						Wage w = new Wage(source, amount, month);
 						appFrame.user.addMonthlyIncome(w);
 						nameIncField.setText("");
-						monthIncField.setText("");
+						monthComboBox.setSelectedItem(0);
 						amountIncField.setText("");
 
 						// Update Home Income
