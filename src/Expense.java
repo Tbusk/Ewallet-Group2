@@ -1,32 +1,48 @@
 import java.util.Scanner;
 
+/**
+ * A class for calculating the user's expenses
+ */
 public class Expense {
 	Scanner scnr = new Scanner(System.in);
 	String source;
 	double amount;
 	int yearlyfrequency; //1 for 1 time or once a year, 12 for monthly or or 24 for biweekly
 	
-	public String addSource() {
-		System.out.println("Enter the Source of the expense.");
-		source = scnr.nextLine();
-		
-		return source;
+	/**
+	 * Accepts the parameter values as inputs and updating the object's values
+	 * @param source user's source of expense
+	 * @param amount user's amount of expense
+	 * @param yearlyfrequency user's frequency of expense
+	 */
+	Expense(String source, double amount, int yearlyfrequency) {
+		this.source = source;
+		this.amount = amount;
+		this.yearlyfrequency = yearlyfrequency;
 	}
 	
-	public Double addAmount() {
-		System.out.println("Enter the amount of the expense.");
-		amount = scnr.nextDouble();
-		
-		return amount;
+	/**
+	 * Method responsible for getting the source of the expense
+	 * @param source user's source of the expense
+	 */
+	public void getSource(String source) {
+		this.source = source;
 	}
 	
-	public int addFrequency() {
-		System.out.println("Enter the yearly frequency of the expense (1 for 1 time or once a year,"
-				+ " 12 for monthly or or 24 for biweekly).");
-		yearlyfrequency = scnr.nextInt();
-		
-		return yearlyfrequency;
+	/**
+	 * Method responsible for getting the amount of the expense
+	 * @param amount user's amount of expense
+	 */
+	public void getAmount(Double amount) {
+		this.amount = amount;
 	}
-
+	
+	/**
+	 * Method responsible for getting the frequency of the expense
+	 * @param yearlyfrequency user's frequency of expense
+	 */
+	public void getFrequency(int yearlyfrequency) {
+		this.yearlyfrequency = yearlyfrequency;
+	}
 
 }

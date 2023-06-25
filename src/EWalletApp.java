@@ -115,10 +115,5 @@ public class EWalletApp {
 		return false;
 	}
 	
-	public void Expenses() {
-		ExpenserMain isExpense = new ExpenserMain();
-		
-		isExpense.addExpense(null);
-	}
 
 }

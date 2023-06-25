@@ -1,15 +1,14 @@
 
+
+
 public class ExpenserMain implements Expenser {
+	public User userAtHand = null;
 	
 	// Add Expense feature
 	@Override
 	public void addExpense (Expense Ex) {
-		Expense Exp = new Expense();
 		
-		Exp.addSource();
-		Exp.addAmount();
-		Exp.addFrequency();
-		
+
 	}
 	
 	// Add Monthly Income feature

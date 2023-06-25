@@ -56,5 +56,13 @@ public class User {
 	protected void setPwd(String password) {
 		this.pwd = password;
 	}
+	
+	/**
+	 * Method responsible for adding expense to the arraylist
+	 * @param Ex user's calculated expense
+	 */
+	protected void addExpense(Expense Ex) {
+		Spending.add(Ex);
+	}
 
 }
