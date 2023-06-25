@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -123,22 +125,24 @@ public class EWalletApp {
 
 	public static void main(String[] args) {
 		appFrame app = new appFrame();
+
 	}
 
 }
 
 class appFrame extends JFrame {
 
+	static User user; // temporary - until login is set up.
 	JMenuBar navMenuBar;
 	JMenu navMenu;
 	JMenuItem homeNav, addItemNav, importNav, estimateNav, incomeReportNav, expenseReportNav, detailedReportNav;
 
 	appFrame(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setPreferredSize(new Dimension(600,700));
+		this.setMinimumSize(new Dimension(600,700));
 		this.setTitle("EWallet Application");
 
-
+		user = new User("Kevin", "Abc!1234");
 		homePanel hPanel = new homePanel();
 		addItemPanel addItmPanel = new addItemPanel();
 		importPanel impPanel = new importPanel();
@@ -310,10 +314,8 @@ class appFrame extends JFrame {
 
 class homePanel extends JPanel {
 
-	JLabel summaryTxt;
-	JLabel totalIncomeLbl, totalIncomeAmtLbl;
-	JLabel totalExpensesLbl, totalExpensesAmtLbl;
-	JLabel totalSavingsLbl, totalSavingsAmtLbl;
+	JLabel summaryTxt, totalIncomeLbl ,totalExpensesLbl, totalSavingsLbl;
+	static JLabel totalExpensesAmtLbl, totalSavingsAmtLbl, totalIncomeAmtLbl;
 	GridBagConstraints gbConst;
 	homePanel() {
 
@@ -374,13 +376,17 @@ class homePanel extends JPanel {
 }
 
 class addItemPanel extends JTabbedPane {
+
+	int yearlyFrequency;
+	double amount;
+	String month, source;
 	GridBagConstraints gbConst;
 	JPanel incomePane, expensePane;
 	JLabel addIncomeItemLbl, addExpenseItemLbl;
-	JLabel nameIncomeLbl, amountIncomeLbl, monthExpenseLbl;
-	JLabel nameExpenseLbl, amountExpenseLbl, frequencyIncomeLbl;
-	JTextField nameIncField, amountIncField, frequencyIncField;
-	JTextField nameExpField, amountExpField, monthExpField;
+	JLabel nameIncomeLbl, amountIncomeLbl, monthIncomeLbl;
+	JLabel nameExpenseLbl, amountExpenseLbl, frequencyExpLbl;
+	JTextField nameIncField, amountIncField, frequencyExpField;
+	JTextField nameExpField, amountExpField, monthIncField;
 	JButton addIncomeButton, addExpenseButton;
 	addItemPanel() {
 		incomePane = new JPanel();
@@ -396,26 +402,26 @@ class addItemPanel extends JTabbedPane {
 		addIncomeItemLbl = new JLabel("Add Item");
 		nameIncomeLbl = new JLabel("Name");
 		amountIncomeLbl = new JLabel("Amount");
-		monthExpenseLbl = new JLabel("Month");
+		monthIncomeLbl = new JLabel("Month");
 
 		addExpenseItemLbl = new JLabel("Add Item");
 		nameExpenseLbl = new JLabel("Name");
 		amountExpenseLbl = new JLabel("Amount");
-		frequencyIncomeLbl = new JLabel("Freq.");
+		frequencyExpLbl = new JLabel("Freq.");
 
 		nameIncField = new JTextField();
 		nameIncField.setPreferredSize(new Dimension(280, 50));
 		amountIncField = new JTextField();
 		amountIncField.setPreferredSize(new Dimension(280, 50));
-		frequencyIncField = new JTextField();
-		frequencyIncField.setPreferredSize(new Dimension(280, 50));
+		frequencyExpField = new JTextField();
+		frequencyExpField.setPreferredSize(new Dimension(280, 50));
 
 		nameExpField = new JTextField();
 		nameExpField.setPreferredSize(new Dimension(280, 50));
 		amountExpField = new JTextField();
 		amountExpField.setPreferredSize(new Dimension(280, 50));
-		monthExpField = new JTextField();
-		monthExpField.setPreferredSize(new Dimension(280, 50));
+		monthIncField = new JTextField();
+		monthIncField.setPreferredSize(new Dimension(280, 50));
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 0;
@@ -454,14 +460,14 @@ class addItemPanel extends JTabbedPane {
 		gbConst.gridy = 3;
 		gbConst.gridwidth = 1;
 		gbConst.insets = new Insets(10,20,30,30);
-		frequencyIncomeLbl.setFont(new Font(null, Font.PLAIN, 32));
-		incomePane.add(frequencyIncomeLbl, gbConst);
+		monthIncomeLbl.setFont(new Font(null, Font.PLAIN, 32));
+		incomePane.add(monthIncomeLbl, gbConst);
 
 		gbConst.gridx = 1;
 		gbConst.gridy = 3;
 		gbConst.insets = new Insets(10,10,30,30);
-		frequencyIncField.setFont(new Font(null, Font.PLAIN, 28));
-		incomePane.add(frequencyIncField, gbConst);
+		monthIncField.setFont(new Font(null, Font.PLAIN, 28));
+		incomePane.add(monthIncField, gbConst);
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 4;
@@ -475,10 +481,55 @@ class addItemPanel extends JTabbedPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(e.getSource() == addIncomeButton) {
-					System.out.println("Add Income Button Clicked.");
-					nameIncField.setText("");
-					frequencyIncField.setText("");
-					amountIncField.setText("");
+					if(nameIncField.getText().length() > 0 && amountIncField.getText().length() > 0 & monthIncField.getText().length() > 0) {
+						try {
+							amount = Double.parseDouble(amountIncField.getText());
+						} catch (NumberFormatException n) {
+							System.out.println(n.getMessage());
+							amount = 0.00f;
+						}
+						source = nameIncField.getText();
+						month = monthIncField.getText();
+						Wage w = new Wage(source, amount, month);
+						appFrame.user.addMonthlyIncome(w);
+						nameIncField.setText("");
+						monthIncField.setText("");
+						amountIncField.setText("");
+
+						// Update Home Income
+						appFrame.user.setBalance(appFrame.user.getBalance() + w.getAmount());
+						homePanel.totalIncomeAmtLbl.setText("$" + String.format("%.2f",appFrame.user.getBalance()));
+
+						// update table
+						incomeRepPanel.model.addRow(new Object[]{});
+						int i = 0;
+						for(Wage wage : appFrame.user.getIncome()) {
+							incomeRepPanel.incomeTable.setValueAt(wage.getSource(), i, 0);
+							incomeRepPanel.incomeTable.setValueAt(String.format("$%.2f",wage.getAmount()), i, 1);
+							incomeRepPanel.incomeTable.setValueAt(wage.getMonth(), i, 2);
+							++i;
+						}
+
+						// update detailed table
+						int j = 0;
+						detailedRepPanel.model.addRow(new Object[]{});
+						for(Wage wge : appFrame.user.getIncome()) {
+							detailedRepPanel.detailedTable.setValueAt("Income", j, 0);
+							detailedRepPanel.detailedTable.setValueAt(wge.getSource(), j, 1);
+							detailedRepPanel.detailedTable.setValueAt(String.format("$%.2f",wge.getAmount()), j, 2);
+							detailedRepPanel.detailedTable.setValueAt(wge.getMonth(), j, 3);
+							++j;
+						}
+
+						for(Expense Ex : appFrame.user.getSpending()) {
+							detailedRepPanel.detailedTable.setValueAt("Expense", j, 0);
+							detailedRepPanel.detailedTable.setValueAt(Ex.getSource(), j, 1);
+							detailedRepPanel.detailedTable.setValueAt(String.format("$%.2f",Ex.getAmount()), j, 2);
+							detailedRepPanel.detailedTable.setValueAt(Ex.getYearlyfrequency(), j, 3);
+							++j;
+						}
+					}
+
 				}
 			}
 		});
@@ -521,14 +572,14 @@ class addItemPanel extends JTabbedPane {
 		gbConst.gridy = 3;
 		gbConst.gridwidth = 1;
 		gbConst.insets = new Insets(10,20,30,30);
-		monthExpenseLbl.setFont(new Font(null, Font.PLAIN, 32));
-		expensePane.add(monthExpenseLbl, gbConst);
+		frequencyExpLbl.setFont(new Font(null, Font.PLAIN, 32));
+		expensePane.add(frequencyExpLbl, gbConst);
 
 		gbConst.gridx = 1;
 		gbConst.gridy = 3;
 		gbConst.insets = new Insets(10,10,30,30);
-		monthExpField.setFont(new Font(null, Font.PLAIN, 28));
-		expensePane.add(monthExpField, gbConst);
+		frequencyExpField.setFont(new Font(null, Font.PLAIN, 28));
+		expensePane.add(frequencyExpField, gbConst);
 
 		gbConst.gridx = 0;
 		gbConst.gridy = 4;
@@ -542,10 +593,55 @@ class addItemPanel extends JTabbedPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(e.getSource() == addExpenseButton) {
-					System.out.println("Add Expense Button Clicked.");
-					nameExpField.setText("");
-					monthExpField.setText("");
-					amountExpField.setText("");
+					if(nameExpField.getText().length() > 0 && amountExpField.getText().length() > 0 & frequencyExpField.getText().length() > 0) {
+						try {
+							amount = Double.parseDouble(amountExpField.getText());
+							yearlyFrequency = Integer.parseInt(frequencyExpField.getText());
+
+						} catch (NumberFormatException n) {
+							System.out.println(n.getMessage());
+							amount = 0.00f;
+						}
+						source = nameExpField.getText();
+						Expense Ex = new Expense(source, amount, yearlyFrequency);
+						appFrame.user.addExpense(Ex);
+
+						// update expense table and expenses on home
+						appFrame.user.setExpenses(0.00f);
+						expenseRepPanel.model.addRow(new Object[]{});
+						int i = 0;
+						for(Expense Exp : appFrame.user.getSpending()) {
+							appFrame.user.setExpenses(appFrame.user.getExpenses() + Exp.amount);
+							expenseRepPanel.spendingTable.setValueAt(Exp.getSource(), i, 0);
+							expenseRepPanel.spendingTable.setValueAt(String.format("$%.2f",Exp.getAmount()), i, 1);
+							expenseRepPanel.spendingTable.setValueAt(Exp.getYearlyfrequency(), i, 2);
+							++i;
+						}
+						homePanel.totalExpensesAmtLbl.setText("$" + String.format("%.2f",appFrame.user.getExpenses()));
+
+						// update detailed table
+						i = 0;
+						detailedRepPanel.model.addRow(new Object[]{});
+						for(Expense Exp : appFrame.user.getSpending()) {
+							detailedRepPanel.detailedTable.setValueAt("Expense", i, 0);
+							detailedRepPanel.detailedTable.setValueAt(Exp.getSource(), i, 1);
+							detailedRepPanel.detailedTable.setValueAt(String.format("$%.2f",Exp.getAmount()), i, 2);
+							detailedRepPanel.detailedTable.setValueAt(Exp.getYearlyfrequency(), i, 3);
+							++i;
+						}
+
+						for(Wage wage : appFrame.user.getIncome()) {
+							detailedRepPanel.detailedTable.setValueAt("Income", i, 0);
+							detailedRepPanel.detailedTable.setValueAt(wage.getSource(), i, 1);
+							detailedRepPanel.detailedTable.setValueAt(String.format("$%.2f",wage.getAmount()), i, 2);
+							detailedRepPanel.detailedTable.setValueAt(wage.getMonth(), i, 3);
+							++i;
+						}
+
+						nameExpField.setText("");
+						frequencyExpField.setText("");
+						amountExpField.setText("");
+					}
 				}
 			}
 		});
@@ -671,7 +767,7 @@ class estimatePanel extends JPanel {
 		estimateLbl.setFont(new Font(null, Font.PLAIN, 32));
 		this.add(estimateLbl, gbConst);
 
-		estimateAmtLbl = new JLabel("120 days");
+		estimateAmtLbl = new JLabel("0 days");
 		gbConst.gridx = 1;
 		gbConst.gridy = 1;
 		gbConst.insets = new Insets(10,0,30,0);
@@ -731,25 +827,181 @@ class estimatePanel extends JPanel {
 }
 
 class incomeRepPanel extends JPanel {
-	JLabel testLbl;
+	static DefaultTableModel model;
+	DefaultTableCellRenderer centerRenderer;
+	static JScrollPane jScrollPane;
+	static int arraySize;
+	ArrayList<Wage> Income;
+	Object[][] tableVals;
+	String[] columnHeadings;
+	static JTable incomeTable;
+	JLabel incomeText;
+	JButton exportReport;
 	incomeRepPanel() {
-		testLbl = new JLabel("Test Income Report Nav");
-		this.add(testLbl);
+
+		this.setLayout(new BorderLayout());
+		incomeText = new JLabel("Income Report");
+		incomeText.setFont(new Font(null, Font.PLAIN, 40));
+		incomeText.setHorizontalAlignment(JLabel.CENTER);
+		this.add(incomeText, BorderLayout.PAGE_START);
+		centerRenderer = new DefaultTableCellRenderer();
+		columnHeadings = new String[]{"Source","Amount", "Month"};
+		Income = appFrame.user.getIncome();
+		tableVals = new Object[Income.size()][3];
+		model = new DefaultTableModel(tableVals, columnHeadings);
+		incomeTable = new JTable(model) {
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		jScrollPane = new JScrollPane(incomeTable);
+
+		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		for (int i = 0; i < incomeTable.getColumnCount(); i++) {
+			incomeTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+		}
+		incomeTable.setDefaultRenderer(String.class, centerRenderer);
+		incomeTable.setFont(new Font(null, Font.PLAIN, 24));
+		incomeTable.setRowHeight(45);
+		incomeTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		incomeTable.getTableHeader().setReorderingAllowed(false);
+		incomeTable.setFocusable(true);
+		incomeTable.setRowSelectionAllowed(true);
+		incomeTable.setCellSelectionEnabled(true);
+		incomeTable.getTableHeader().setFont(new Font(null, Font.PLAIN, 32));
+		incomeTable.setShowVerticalLines(false);
+
+		this.add(jScrollPane, BorderLayout.CENTER);
+
+		exportReport = new JButton("Export to CSV");
+		exportReport.setSize(new Dimension(200,60));
+		exportReport.setFont(new Font(null, Font.PLAIN, 24));
+
+		JPanel lowerPanel = new JPanel();
+		lowerPanel.add(Box.createRigidArea(new Dimension(25,50)));
+		lowerPanel.add(exportReport, BorderLayout.CENTER);
+		lowerPanel.add(Box.createRigidArea(new Dimension(25,50)));
+		this.add(lowerPanel, BorderLayout.SOUTH);
+
 	}
 }
 
 class expenseRepPanel extends JPanel {
-	JLabel testLbl;
+	static DefaultTableModel model;
+	DefaultTableCellRenderer centerRenderer;
+	static JScrollPane jScrollPane;
+	static int arraySize;
+	ArrayList<Expense> Spending;
+	Object[][] tableVals;
+	String[] columnHeadings;
+	static JTable spendingTable;
+	JLabel expenseText;
+	JButton exportReport;
 	expenseRepPanel() {
-		testLbl = new JLabel("Test Expense Report Nav");
-		this.add(testLbl);
+		this.setLayout(new BorderLayout());
+		expenseText = new JLabel("Expense Report");
+		expenseText.setFont(new Font(null, Font.PLAIN, 40));
+		expenseText.setHorizontalAlignment(JLabel.CENTER);
+		this.add(expenseText, BorderLayout.PAGE_START);
+		centerRenderer = new DefaultTableCellRenderer();
+		columnHeadings = new String[]{"Source","Amount", "Frequency"};
+		Spending = appFrame.user.getSpending();
+		tableVals = new Object[Spending.size()][3];
+		model = new DefaultTableModel(tableVals, columnHeadings);
+		spendingTable = new JTable(model) {
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		jScrollPane = new JScrollPane(spendingTable);
+
+		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		for (int i = 0; i < spendingTable.getColumnCount(); i++) {
+			spendingTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+		}
+		spendingTable.setDefaultRenderer(String.class, centerRenderer);
+		spendingTable.setFont(new Font(null, Font.PLAIN, 24));
+		spendingTable.setRowHeight(45);
+		spendingTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		spendingTable.getTableHeader().setReorderingAllowed(false);
+		spendingTable.setFocusable(true);
+		spendingTable.setRowSelectionAllowed(true);
+		spendingTable.setCellSelectionEnabled(true);
+		spendingTable.getTableHeader().setFont(new Font(null, Font.PLAIN, 32));
+		spendingTable.setShowVerticalLines(false);
+
+		this.add(jScrollPane, BorderLayout.CENTER);
+
+		exportReport = new JButton("Export to CSV");
+		exportReport.setSize(new Dimension(200,60));
+		exportReport.setFont(new Font(null, Font.PLAIN, 24));
+
+		JPanel lowerPanel = new JPanel();
+		lowerPanel.add(Box.createRigidArea(new Dimension(25,50)));
+		lowerPanel.add(exportReport, BorderLayout.CENTER);
+		lowerPanel.add(Box.createRigidArea(new Dimension(25,50)));
+		this.add(lowerPanel, BorderLayout.SOUTH);
+
 	}
 }
 
 class detailedRepPanel extends JPanel {
-	JLabel testLbl;
+	static DefaultTableModel model;
+	DefaultTableCellRenderer centerRenderer;
+	static JScrollPane jScrollPane;
+	static int arraySize;
+	ArrayList<Expense> Spending;
+	ArrayList<Wage> Income;
+	Object[][] tableVals;
+	String[] columnHeadings;
+	static JTable detailedTable;
+	JLabel detaileReportTxt;
+	JButton exportReport;
 	detailedRepPanel() {
-		testLbl = new JLabel("Test Detailed Report Nav");
-		this.add(testLbl);
+
+		this.setLayout(new BorderLayout());
+		detaileReportTxt = new JLabel("Detailed Report");
+		detaileReportTxt.setFont(new Font(null, Font.PLAIN, 40));
+		detaileReportTxt.setHorizontalAlignment(JLabel.CENTER);
+		this.add(detaileReportTxt, BorderLayout.PAGE_START);
+		centerRenderer = new DefaultTableCellRenderer();
+		columnHeadings = new String[]{"Type","Source","Amount", "Frequency"};
+		Spending = appFrame.user.getSpending();
+		Income = appFrame.user.getIncome();
+		tableVals = new Object[Spending.size()+Income.size()][4];
+		model = new DefaultTableModel(tableVals, columnHeadings);
+		detailedTable = new JTable(model) {
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		jScrollPane = new JScrollPane(detailedTable);
+
+		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		for (int i = 0; i < detailedTable.getColumnCount(); i++) {
+			detailedTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+		}
+		detailedTable.setDefaultRenderer(String.class, centerRenderer);
+		detailedTable.setFont(new Font(null, Font.PLAIN, 24));
+		detailedTable.setRowHeight(45);
+		detailedTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		detailedTable.getTableHeader().setReorderingAllowed(false);
+		detailedTable.setFocusable(true);
+		detailedTable.setRowSelectionAllowed(true);
+		detailedTable.setCellSelectionEnabled(true);
+		detailedTable.getTableHeader().setFont(new Font(null, Font.PLAIN, 32));
+		detailedTable.setShowVerticalLines(false);
+
+		this.add(jScrollPane, BorderLayout.CENTER);
+
+		exportReport = new JButton("Export to CSV");
+		exportReport.setSize(new Dimension(200,60));
+		exportReport.setFont(new Font(null, Font.PLAIN, 24));
+
+		JPanel lowerPanel = new JPanel();
+		lowerPanel.add(Box.createRigidArea(new Dimension(25,50)));
+		lowerPanel.add(exportReport, BorderLayout.CENTER);
+		lowerPanel.add(Box.createRigidArea(new Dimension(25,50)));
+		this.add(lowerPanel, BorderLayout.SOUTH);
 	}
 }
