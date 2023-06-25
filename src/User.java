@@ -5,14 +5,15 @@ import java.util.ArrayList;
  */
 public class User {
 	private ArrayList <Currency>currencyRates;
-	private ArrayList <Wage>Income;  // user income sources that user can record or view or search by type or month 
-	private ArrayList <Expense>Spending; //user's expenses 
+	private ArrayList <Wage>Income = new ArrayList<>();  // user income sources that user can record or view or search by type or month
+	private ArrayList <Expense>Spending = new ArrayList<>(); //user's expenses
 	String username;
 	String pwd;
 	//current total income - total 
 	double balance;
 	// possible monthly savings, calculated using monthly income (most recent) assuming the data we have is for one year, and monthly and biweekly expenses, here you can assume yearly expenses that are recorded have already been paid. 
-	double monthlysavings;	
+	double monthlysavings;
+	double expenses;
 	//should add constructor(s)
 
 	/**
@@ -57,4 +58,44 @@ public class User {
 		this.pwd = password;
 	}
 
+	protected void addMonthlyIncome(Wage W) {
+		Income.add(W);
+	}
+
+	protected void addExpense(Expense Ex) {
+		Spending.add(Ex);
+	}
+
+	protected ArrayList<Wage> getIncome() {
+		return this.Income;
+	}
+
+	protected ArrayList<Expense> getSpending() {
+		return this.Spending;
+	}
+
+	protected void setBalance(double balance) {
+		this.balance = balance;
+	}
+
+	protected double getBalance(){
+		return this.balance;
+	}
+
+	protected void setExpenses(double expenses) {
+		this.expenses = expenses;
+	}
+
+	protected double getExpenses() {
+		return this.expenses;
+	}
+
+	protected double getMonthlySavings() {
+		return this.monthlysavings;
+	}
+
+	protected void setMonthlySavings(double monthlySavings) {
+		this.monthlysavings = monthlySavings;
+	}
 }
+
