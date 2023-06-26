@@ -567,7 +567,7 @@ class addItemPanel extends JTabbedPane {
 							detailedRepPanel.detailedTable.setValueAt("Expense", j, 0);
 							detailedRepPanel.detailedTable.setValueAt(Ex.getSource(), j, 1);
 							detailedRepPanel.detailedTable.setValueAt(String.format("$%.2f",Ex.getAmount()), j, 2);
-							detailedRepPanel.detailedTable.setValueAt(Ex.getYearlyfrequency(), j, 3);
+							detailedRepPanel.detailedTable.setValueAt(Ex.getFrequency(), j, 3);
 							++j;
 						}
 					}
@@ -662,7 +662,7 @@ class addItemPanel extends JTabbedPane {
 							expenserMain.userAtHand.setExpenses(expenserMain.userAtHand.getExpenses() + Exp.amount);
 							expenseRepPanel.spendingTable.setValueAt(Exp.getSource(), i, 0);
 							expenseRepPanel.spendingTable.setValueAt(String.format("$%.2f",Exp.getAmount()), i, 1);
-							expenseRepPanel.spendingTable.setValueAt(Exp.getYearlyfrequency(), i, 2);
+							expenseRepPanel.spendingTable.setValueAt(Exp.getFrequency(), i, 2);
 							++i;
 						}
 						expenserMain.updateMonthlySavings();
@@ -676,7 +676,7 @@ class addItemPanel extends JTabbedPane {
 							detailedRepPanel.detailedTable.setValueAt("Expense", i, 0);
 							detailedRepPanel.detailedTable.setValueAt(Exp.getSource(), i, 1);
 							detailedRepPanel.detailedTable.setValueAt(String.format("$%.2f",Exp.getAmount()), i, 2);
-							detailedRepPanel.detailedTable.setValueAt(Exp.getYearlyfrequency(), i, 3);
+							detailedRepPanel.detailedTable.setValueAt(Exp.getFrequency(), i, 3);
 							++i;
 						}
 
