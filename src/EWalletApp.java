@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EWalletApp {
-	//this is the app class, has the GUI and create one object of your expense calculator class. The expense calculator class is the implementation of the Expenser interface 
+	//this is the app class, has the GUI and create one object of your expense calculator class. The expense calculator class is the implementation of the Expenser interface
 	private ArrayList<User> AllData;
 
 	/**
@@ -120,7 +120,7 @@ public class EWalletApp {
 		}
 		return false;
 	}
-	
+
 
 	public static void main(String[] args) {
 		appFrame app = new appFrame();
@@ -143,7 +143,7 @@ class appFrame extends JFrame {
 
 	appFrame(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setMinimumSize(new Dimension(600,700));
+		this.setMinimumSize(new Dimension(900,700));
 		this.setTitle("EWallet Application");
 
 		user = new User("Kevin", "Abc!1234"); // temporary solution until login is set up
@@ -536,6 +536,25 @@ class addItemPanel extends JTabbedPane {
 						monthComboBox.setSelectedItem(0);
 						amountIncField.setText("");
 
+						// Update panel totals
+						incomeRepPanel.totalIncomeAmtLbl.setText(String.format("$%.2f",incomeRepPanel.getIncome(expenserMain.userAtHand.getIncome())));
+
+						// Update JComboBoxes if
+						if(incomeRepPanel.typeSelector.getItemCount() > 0) {
+							boolean contains = false;
+							for (int i = 0; i < incomeRepPanel.typeSelector.getItemCount(); i++) {
+								if (incomeRepPanel.typeSelector.getItemAt(i).equals(w.getSource())) {
+									contains = true;
+								}
+							}
+							if (!contains) {
+								incomeRepPanel.typeSelector.addItem(w.getSource());
+							}
+						} else {
+							incomeRepPanel.typeSelector.addItem(w.getSource());
+						}
+
+
 						// Update Home Income
 						expenserMain.userAtHand.setBalance(expenserMain.userAtHand.getBalance() + w.getAmount());
 						expenserMain.updateMonthlySavings();
@@ -554,6 +573,7 @@ class addItemPanel extends JTabbedPane {
 
 						// update detailed table by filling it in with wage and expense data
 						int j = 0;
+						incomeRepPanel.model.setNumRows(expenserMain.userAtHand.getIncome().size());
 						detailedRepPanel.model.addRow(new Object[]{}); // adding a blank row in the table
 						for(Wage wge : expenserMain.userAtHand.getIncome()) {
 							detailedRepPanel.detailedTable.setValueAt("Income", j, 0);
@@ -570,6 +590,7 @@ class addItemPanel extends JTabbedPane {
 							detailedRepPanel.detailedTable.setValueAt(Ex.getFrequency(), j, 3);
 							++j;
 						}
+
 					}
 
 				}
@@ -653,6 +674,24 @@ class addItemPanel extends JTabbedPane {
 						source = nameExpField.getText();
 						Expense Ex = new Expense(source, amount, yearlyFrequency); // new expense object
 						expenserMain.addExpense(Ex); // adding it to the user's spending arraylist
+
+						expenseRepPanel.totalExpenseAmtLbl.setText(String.format("$%.2f",expenseRepPanel.getExpense(expenserMain.userAtHand.getSpending())));
+
+						// Update JComboBoxes
+						if(expenseRepPanel.typeSelector.getItemCount() > 0) {
+							boolean contains = false;
+							for (int i = 0; i < expenseRepPanel.typeSelector.getItemCount(); i++) {
+								if (expenseRepPanel.typeSelector.getItemAt(i).equals(Ex.getSource())) {
+									contains = true;
+								}
+							}
+							if (!contains) {
+								expenseRepPanel.typeSelector.addItem(Ex.getSource());
+							}
+						} else {
+							expenseRepPanel.typeSelector.addItem(Ex.getSource());
+						}
+
 
 						// update expense table and expenses on home
 						expenserMain.userAtHand.setExpenses(0.00f);
@@ -887,32 +926,131 @@ class estimatePanel extends JPanel {
 
 /**
  * incomeRepPanel is a class that makes up ewallet's income report page.  It shows basic income report information like all
- * income information and will contain the ability to filter data by month or type.
+ * income information and contains the ability to filter data by month or source.
  */
 class incomeRepPanel extends JPanel {
 	static DefaultTableModel model;
 	DefaultTableCellRenderer centerRenderer;
 	static JScrollPane jScrollPane;
-	ArrayList<Wage> Income;
+	static ArrayList<Wage> Income;
+	static ArrayList<Wage> filteredIncomeList = new ArrayList<>();
 	Object[][] tableVals; // table values
 	String[] columnHeadings;
 	static JTable incomeTable;
-	JLabel incomeText;
-	JButton exportReport;
+	JLabel incomeText, filterTxt;
+	JLabel totalIncomeLbl, totalFilteredIncomeLbl;
+	static JLabel totalIncomeAmtLbl, totalFilteredIncomeAmtLbl;
+	JButton exportReport, applyFilter;
 	ExpenserMain expenserMain;
+	GridBagConstraints gbConst;
+	JPanel upperPanel;
+	JComboBox monthSelector;
+	static JComboBox typeSelector;
+	String[] months;
 	incomeRepPanel() {
 
 		expenserMain = new ExpenserMain();
 		expenserMain.userAtHand = appFrame.user;
+		incomeRepPanel.Income = expenserMain.userAtHand.getIncome(); // retrieving income data
 
 		this.setLayout(new BorderLayout());
+
 		incomeText = new JLabel("Income Report");
 		incomeText.setFont(new Font(null, Font.PLAIN, 40));
 		incomeText.setHorizontalAlignment(JLabel.CENTER);
-		this.add(incomeText, BorderLayout.PAGE_START);
+
+		gbConst = new GridBagConstraints();
+		upperPanel = new JPanel();
+		upperPanel.setLayout(new GridBagLayout());
+		gbConst.gridx = 0;
+		gbConst.gridy = 0;
+		gbConst.gridwidth = 4;
+		gbConst.insets = new Insets(20,0,20,0);
+		upperPanel.add(incomeText, gbConst);
+
+		totalIncomeLbl = new JLabel("Total Income");
+		totalIncomeLbl.setFont(new Font(null, Font.PLAIN, 32));
+		gbConst.gridwidth = 1;
+		gbConst.gridx = 0;
+		gbConst.gridy = 1;
+		gbConst.insets = new Insets(0,20,20,0);
+		upperPanel.add(totalIncomeLbl,gbConst);
+
+		totalIncomeAmtLbl = new JLabel("0.00");
+		totalIncomeAmtLbl.setFont(new Font(null, Font.PLAIN, 32));
+		gbConst.gridx = 1;
+		gbConst.gridy = 1;
+		gbConst.insets = new Insets(0,5,20,5);
+		upperPanel.add(totalIncomeAmtLbl,gbConst);
+
+		totalFilteredIncomeLbl = new JLabel("Income (Filtered)");
+		totalFilteredIncomeLbl.setFont(new Font(null, Font.PLAIN, 32));
+		gbConst.gridx = 2;
+		gbConst.gridy = 1;
+		gbConst.insets = new Insets(0,5,20,5);
+		upperPanel.add(totalFilteredIncomeLbl,gbConst);
+
+		totalFilteredIncomeAmtLbl = new JLabel("0.00");
+		totalFilteredIncomeAmtLbl.setFont(new Font(null, Font.PLAIN, 32));
+		gbConst.gridx = 3;
+		gbConst.gridy = 1;
+		gbConst.insets = new Insets(0,5,20,20);
+		upperPanel.add(totalFilteredIncomeAmtLbl,gbConst);
+
+		filterTxt = new JLabel("Apply a filter");
+		filterTxt.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.gridx = 0;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(0,20,20,0);
+		upperPanel.add(filterTxt,gbConst);
+
+		months = new String[]{"","January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+		monthSelector = new JComboBox<>(months);
+		monthSelector.setPreferredSize(new Dimension(200,50));
+		monthSelector.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.gridx = 1;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(0,20,20,20);
+		upperPanel.add(monthSelector,gbConst);
+
+		incomeRepPanel.typeSelector = new JComboBox<>(getSources(Income).toArray());
+		typeSelector.setFont(new Font(null, Font.PLAIN, 24));
+		typeSelector.setPreferredSize(new Dimension(200,50));
+		gbConst.gridx = 2;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(0,20,20,20);
+		upperPanel.add(typeSelector,gbConst);
+
+		applyFilter = new JButton("Filter");
+		applyFilter.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource() == applyFilter) {
+					filteredIncomeList = filterIncomes(Income,(String)typeSelector.getItemAt(typeSelector.getSelectedIndex()),(String)monthSelector.getItemAt(monthSelector.getSelectedIndex()));
+					incomeRepPanel.model.setNumRows(filteredIncomeList.size());
+					int i = 0;
+					double incomeSum = 0.00f;
+					for(Wage wage : filteredIncomeList) {
+						incomeRepPanel.incomeTable.setValueAt(wage.getSource(), i, 0);
+						incomeRepPanel.incomeTable.setValueAt(String.format("$%.2f",wage.getAmount()), i, 1);
+						incomeRepPanel.incomeTable.setValueAt(wage.getMonth(), i, 2);
+						++i;
+						incomeSum += wage.getAmount();
+					}
+					totalFilteredIncomeAmtLbl.setText(String.format("$%.2f",incomeSum));
+				}
+			}
+		});
+		applyFilter.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.gridx = 3;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(0,20,20,20);
+		upperPanel.add(applyFilter,gbConst);
+
+		this.add(upperPanel, BorderLayout.PAGE_START);
+
 		centerRenderer = new DefaultTableCellRenderer();
 		columnHeadings = new String[]{"Source","Amount", "Month"};
-		Income = expenserMain.userAtHand.getIncome(); // retrieving income data
 		tableVals = new Object[Income.size()][3]; // creating table with 3 columns and as many rows as there are data in Income arraylist
 		model = new DefaultTableModel(tableVals, columnHeadings); // setting up table model
 		incomeTable = new JTable(model) {
@@ -942,6 +1080,12 @@ class incomeRepPanel extends JPanel {
 		this.add(jScrollPane, BorderLayout.CENTER);
 
 		exportReport = new JButton("Export to CSV");
+		exportReport.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) { // exports report to csv
+				expenserMain.exportReport("Income Report");
+			}
+		});
 		exportReport.setSize(new Dimension(200,60));
 		exportReport.setFont(new Font(null, Font.PLAIN, 24));
 
@@ -953,6 +1097,49 @@ class incomeRepPanel extends JPanel {
 		this.add(lowerPanel, BorderLayout.SOUTH);
 
 	}
+
+	/**
+	 * Method responsible for obtaining sources for the combobox selector
+	 * @param wage Wage ArrayList
+	 * @return ArrayList of Strings of sources
+	 */
+	private ArrayList<String> getSources(ArrayList<Wage> wage) {
+		ArrayList<String> sources = new ArrayList<>();
+		for(Wage w : wage) {
+			sources.add(w.getSource());
+		}
+		return sources;
+	}
+
+	/**
+	 * Method responsible for obtaining total income information for filtered data
+	 * @param wage Filtered ArrayList for income
+	 * @return Total Filtered Income
+	 */
+	static double getIncome(ArrayList<Wage> wage) {
+		double sum = 0.00f;
+		for(Wage w : wage) {
+			sum += w.getAmount();
+		}
+		return sum;
+	}
+
+	/**
+	 * Method responsible for producing a filtered income ArrayList based on user's desired filters like source and month
+	 * @param wage Base Income ArrayList
+	 * @param source Source as String
+	 * @param month Month as String
+	 * @return Filtered ArrayList
+	 */
+	static ArrayList<Wage> filterIncomes(ArrayList<Wage> wage, String source, String month) {
+		ArrayList<Wage> filteredWages = new ArrayList<>();
+		for(Wage w : wage) {
+			if(w.getSource().equals(source) && (w.getMonth().equals(month) || month.equals("")) ) {
+				filteredWages.add(w);
+			}
+		}
+		return filteredWages;
+	}
 }
 
 /**
@@ -963,25 +1150,126 @@ class expenseRepPanel extends JPanel {
 	static DefaultTableModel model;
 	DefaultTableCellRenderer centerRenderer;
 	static JScrollPane jScrollPane;
-	ArrayList<Expense> Spending;
+	static ArrayList<Expense> Spending;
+	static ArrayList<Expense> filteredSpending = new ArrayList<>();
 	Object[][] tableVals;
 	String[] columnHeadings;
 	static JTable spendingTable;
 	JLabel expenseText;
-	JButton exportReport;
+	JLabel totalExpenseLbl, totalFilteredExpenseLbl, filterTxt ;
+	static JLabel totalExpenseAmtLbl, totalFilteredExpenseAmtLbl;
+	JButton exportReport, applyFilter;
 	ExpenserMain expenserMain;
+	GridBagConstraints gbConst;
+	JPanel upperPanel;
+	JComboBox monthSelector;
+	static JComboBox typeSelector;
+	String[] frequency;
+
 	expenseRepPanel() {
 		expenserMain = new ExpenserMain();
 		expenserMain.userAtHand = appFrame.user;
+		expenseRepPanel.Spending = expenserMain.userAtHand.getSpending();
 
 		this.setLayout(new BorderLayout());
+
+
 		expenseText = new JLabel("Expense Report");
 		expenseText.setFont(new Font(null, Font.PLAIN, 40));
 		expenseText.setHorizontalAlignment(JLabel.CENTER);
-		this.add(expenseText, BorderLayout.PAGE_START);
+
+		gbConst = new GridBagConstraints();
+		upperPanel = new JPanel();
+		upperPanel.setLayout(new GridBagLayout());
+		gbConst.gridx = 0;
+		gbConst.gridy = 0;
+		gbConst.gridwidth = 4;
+		gbConst.insets = new Insets(20,0,20,0);
+		upperPanel.add(expenseText, gbConst);
+
+		totalExpenseLbl = new JLabel("Total Expense");
+		totalExpenseLbl.setFont(new Font(null, Font.PLAIN, 32));
+		gbConst.gridwidth = 1;
+		gbConst.gridx = 0;
+		gbConst.gridy = 1;
+		gbConst.insets = new Insets(0,20,20,0);
+		upperPanel.add(totalExpenseLbl,gbConst);
+
+		totalExpenseAmtLbl = new JLabel("0.00");
+		totalExpenseAmtLbl.setFont(new Font(null, Font.PLAIN, 32));
+		gbConst.gridx = 1;
+		gbConst.gridy = 1;
+		gbConst.insets = new Insets(0,5,20,5);
+		upperPanel.add(totalExpenseAmtLbl,gbConst);
+
+		totalFilteredExpenseLbl = new JLabel("Expenses (Filtered)");
+		totalFilteredExpenseLbl.setFont(new Font(null, Font.PLAIN, 32));
+		gbConst.gridx = 2;
+		gbConst.gridy = 1;
+		gbConst.insets = new Insets(0,5,20,5);
+		upperPanel.add(totalFilteredExpenseLbl,gbConst);
+
+		totalFilteredExpenseAmtLbl = new JLabel("0.00");
+		totalFilteredExpenseAmtLbl.setFont(new Font(null, Font.PLAIN, 32));
+		gbConst.gridx = 3;
+		gbConst.gridy = 1;
+		gbConst.insets = new Insets(0,5,20,20);
+		upperPanel.add(totalFilteredExpenseAmtLbl,gbConst);
+
+		filterTxt = new JLabel("Apply a filter");
+		filterTxt.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.gridx = 0;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(0,20,20,0);
+		upperPanel.add(filterTxt,gbConst);
+
+		frequency = new String[]{"1", "12","24"};
+		monthSelector = new JComboBox<>(frequency);
+		monthSelector.setFont(new Font(null, Font.PLAIN, 24));
+		monthSelector.setPreferredSize(new Dimension(200,50));
+		gbConst.gridx = 1;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(0,20,20,20);
+		upperPanel.add(monthSelector,gbConst);
+
+		expenseRepPanel.typeSelector = new JComboBox<>(getSources(Spending).toArray());
+		typeSelector.setFont(new Font(null, Font.PLAIN, 24));
+		typeSelector.setPreferredSize(new Dimension(200,50));
+		gbConst.gridx = 2;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(0,20,20,20);
+		upperPanel.add(typeSelector,gbConst);
+
+		applyFilter = new JButton("Filter");
+		applyFilter.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) { // Filters table results based on user selected categories like month and type.  Repopulates table and summary information
+				if(e.getSource() == applyFilter) {
+					filteredSpending = filterExpenses(Spending,(String)typeSelector.getItemAt(typeSelector.getSelectedIndex()),(String)monthSelector.getItemAt(monthSelector.getSelectedIndex()));
+					expenseRepPanel.model.setNumRows(filteredSpending.size());
+					int i = 0;
+					double expenseSum = 0.00f;
+					for(Expense exp : filteredSpending) {
+						expenseRepPanel.spendingTable.setValueAt(exp.getSource(), i, 0);
+						expenseRepPanel.spendingTable.setValueAt(String.format("$%.2f",exp.getAmount()), i, 1);
+						expenseRepPanel.spendingTable.setValueAt(String.valueOf(exp.getFrequency()), i, 2);
+						++i;
+						expenseSum += exp.getAmount();
+					}
+					totalFilteredExpenseAmtLbl.setText(String.format("$%.2f",expenseSum));
+				}
+			}
+		});
+		applyFilter.setFont(new Font(null, Font.PLAIN, 24));
+		gbConst.gridx = 3;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(0,20,20,20);
+		upperPanel.add(applyFilter,gbConst);
+
+		this.add(upperPanel, BorderLayout.PAGE_START);
+
 		centerRenderer = new DefaultTableCellRenderer();
 		columnHeadings = new String[]{"Source","Amount", "Frequency"};
-		Spending = expenserMain.userAtHand.getSpending();
 		tableVals = new Object[Spending.size()][3]; // creating table with 3 columns and as many rows as there are data in Spending arraylist
 		model = new DefaultTableModel(tableVals, columnHeadings); // setting up table model
 		spendingTable = new JTable(model) {
@@ -1011,6 +1299,14 @@ class expenseRepPanel extends JPanel {
 		this.add(jScrollPane, BorderLayout.CENTER);
 
 		exportReport = new JButton("Export to CSV");
+		exportReport.addActionListener(new ActionListener() { // Exports report to csv file
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource() == exportReport) {
+					expenserMain.exportReport("Expense Report");
+				}
+			}
+		});
 		exportReport.setSize(new Dimension(200,60));
 		exportReport.setFont(new Font(null, Font.PLAIN, 24));
 
@@ -1021,6 +1317,43 @@ class expenseRepPanel extends JPanel {
 		lowerPanel.add(Box.createRigidArea(new Dimension(25,50)));
 		this.add(lowerPanel, BorderLayout.SOUTH);
 
+	}
+	private ArrayList<String> getSources(ArrayList<Expense> Ex) {
+		ArrayList<String> sources = new ArrayList<>();
+		for(Expense ex : Ex) {
+			sources.add(ex.getSource());
+		}
+		return sources;
+	}
+
+	/**
+	 * Method responsible for getting filtered data's total expenses
+	 * @param Ex ArrayList of Expense
+	 * @return Sum of Expenses
+	 */
+	static double getExpense(ArrayList<Expense> Ex) {
+		double sum = 0.00f;
+		for(Expense ex : Ex) {
+			sum += ex.getAmount();
+		}
+		return sum;
+	}
+
+	/**
+	 * Method responsible for filtering data in table based on user's desired filters of source and frequency.
+	 * @param exp Base Expense ArrayList
+	 * @param source Source as String
+	 * @param freq Frequency as String
+	 * @return New ArrayList of filtered data
+	 */
+	static ArrayList<Expense> filterExpenses(ArrayList<Expense> exp, String source, String freq) {
+		ArrayList<Expense> filteredExpenses = new ArrayList<>();
+		for(Expense ex : exp) {
+			if(ex.getSource().equals(source) && (String.valueOf(ex.getFrequency()).equals(freq)) ) {
+				filteredExpenses.add(ex);
+			}
+		}
+		return filteredExpenses;
 	}
 }
 
@@ -1051,7 +1384,7 @@ class detailedRepPanel extends JPanel {
 		detaileReportTxt.setHorizontalAlignment(JLabel.CENTER);
 		this.add(detaileReportTxt, BorderLayout.PAGE_START);
 		centerRenderer = new DefaultTableCellRenderer();
-		columnHeadings = new String[]{"Type","Source","Amount", "Frequency"};
+		columnHeadings = new String[]{"Type","Source","Amount", "Month / Freq"};
 		Spending = expenserMain.userAtHand.getSpending();
 		Income = expenserMain.userAtHand.getIncome();
 		tableVals = new Object[Spending.size()+Income.size()][4];
@@ -1082,7 +1415,13 @@ class detailedRepPanel extends JPanel {
 
 		this.add(jScrollPane, BorderLayout.CENTER);
 
-		exportReport = new JButton("Export to CSV");
+		exportReport = new JButton("Export to CSV"); // exports report to csv file
+		exportReport.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				expenserMain.exportReport("Detailed Report");
+			}
+		});
 		exportReport.setSize(new Dimension(200,60));
 		exportReport.setFont(new Font(null, Font.PLAIN, 24));
 
@@ -1093,4 +1432,5 @@ class detailedRepPanel extends JPanel {
 		lowerPanel.add(Box.createRigidArea(new Dimension(25,50)));
 		this.add(lowerPanel, BorderLayout.SOUTH);
 	}
+
 }
