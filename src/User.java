@@ -78,9 +78,6 @@ public class User {
 	 * Method responsible for adding an expense object to Spending ArrayList
 	 * @param Ex Expense object
 	 */
-	protected void addExpense(Expense Ex) {
-		Spending.add(Ex);
-	}
 
 	/**
 	 * Method responsible for making the ArrayList Income accessible to classes that have access to a user object.

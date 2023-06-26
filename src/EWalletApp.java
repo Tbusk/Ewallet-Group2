@@ -652,7 +652,7 @@ class addItemPanel extends JTabbedPane {
 						}
 						source = nameExpField.getText();
 						Expense Ex = new Expense(source, amount, yearlyFrequency); // new expense object
-						expenserMain.userAtHand.addExpense(Ex); // adding it to the user's spending arraylist
+						expenserMain.addExpense(Ex); // adding it to the user's spending arraylist
 
 						// update expense table and expenses on home
 						expenserMain.userAtHand.setExpenses(0.00f);
