@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public class ExpenserMain implements Expenser {
 	public User userAtHand = null;
@@ -172,6 +173,71 @@ public class ExpenserMain implements Expenser {
 	@Override
 	public void updateMonthlySavings() {
 		userAtHand.setMonthlySavings(userAtHand.getBalance() - userAtHand.getExpenses());
+	}
+
+	
+	/**
+	 * Method responsible for producing a filtered expense ArrayList based on the user's frequency of the expense
+	 * @param exp Base Expense ArrayList
+	 * @param freq Frequency as String
+	 * @return New ArrayList of filtered data
+	 */
+	static ArrayList<Expense> filterExpensesFreq(ArrayList<Expense> exp, String freq) {
+		ArrayList<Expense> filteredExpensesFreq = new ArrayList<>();
+		for(Expense ex : exp) {
+			if(String.valueOf(ex.getFrequency()).equals(freq)) {
+				filteredExpensesFreq.add(ex);
+			}
+		}
+		return filteredExpensesFreq;
+	}
+	
+	/**
+	 * Method responsible for producing a filtered expense ArrayList based on the user's source of the expense
+	 * @param exp Base Expense ArrayList
+	 * @param source Source as String
+	 * @return New ArrayList of filtered data
+	 */
+	static ArrayList<Expense> filterExpensesSource(ArrayList<Expense> exp, String source) {
+		ArrayList<Expense> filteredExpensesSource = new ArrayList<>();
+		for(Expense ex : exp) {
+			if(ex.getSource().equals(source)) {
+				filteredExpensesSource.add(ex);
+			}
+		}
+		return filteredExpensesSource;
+	}
+	
+	/**
+	 * Method responsible for producing a filtered income ArrayList based on the user's month of income
+	 * @param wage Base Wage ArrayList
+	 * @param month Month as String
+	 * @return New ArrayList of filtered data
+	 */
+	static ArrayList<Wage> filterIncomesMonth(ArrayList<Wage> wage, String month) {
+		ArrayList<Wage> filteredIncomesMonth = new ArrayList<>();
+		for(Wage w : wage) {
+			if(w.getMonth().equals(month)) {
+				filteredIncomesMonth.add(w);
+			}
+		}
+		return filteredIncomesMonth;
+	}
+	
+	/**
+	 * Method responsible for producing a filtered income ArrayList based on the user's source of the income
+	 * @param wage Base Wage ArrayList
+	 * @param source Source as String
+	 * @return New ArrayList of filtered data
+	 */
+	static ArrayList<Wage> filterIncomesSource(ArrayList<Wage> wage, String source) {
+		ArrayList<Wage> filteredIncomesSource = new ArrayList<>();
+		for(Wage w : wage) {
+			if(w.getSource().equals(source)) {
+				filteredIncomesSource.add(w);
+			}
+		}
+		return filteredIncomesSource;
 	}
 
 }
