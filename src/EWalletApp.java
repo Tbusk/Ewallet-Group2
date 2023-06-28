@@ -1026,7 +1026,8 @@ class incomeRepPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(e.getSource() == applyFilter) {
-					filteredIncomeList = filterIncomes(Income,(String)typeSelector.getItemAt(typeSelector.getSelectedIndex()),(String)monthSelector.getItemAt(monthSelector.getSelectedIndex()));
+					filteredIncomeList =
+							expenserMain.filterIncomesMonth(expenserMain.filterIncomesSource(expenserMain.userAtHand.getIncome(),(String)typeSelector.getItemAt(typeSelector.getSelectedIndex())), (String)monthSelector.getItemAt(monthSelector.getSelectedIndex()));
 					incomeRepPanel.model.setNumRows(filteredIncomeList.size());
 					int i = 0;
 					double incomeSum = 0.00f;
@@ -1122,23 +1123,6 @@ class incomeRepPanel extends JPanel {
 			sum += w.getAmount();
 		}
 		return sum;
-	}
-
-	/**
-	 * Method responsible for producing a filtered income ArrayList based on user's desired filters like source and month
-	 * @param wage Base Income ArrayList
-	 * @param source Source as String
-	 * @param month Month as String
-	 * @return Filtered ArrayList
-	 */
-	static ArrayList<Wage> filterIncomes(ArrayList<Wage> wage, String source, String month) {
-		ArrayList<Wage> filteredWages = new ArrayList<>();
-		for(Wage w : wage) {
-			if(w.getSource().equals(source) && (w.getMonth().equals(month) || month.equals("")) ) {
-				filteredWages.add(w);
-			}
-		}
-		return filteredWages;
 	}
 }
 
@@ -1245,7 +1229,9 @@ class expenseRepPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) { // Filters table results based on user selected categories like month and type.  Repopulates table and summary information
 				if(e.getSource() == applyFilter) {
-					filteredSpending = filterExpenses(Spending,(String)typeSelector.getItemAt(typeSelector.getSelectedIndex()),(String)monthSelector.getItemAt(monthSelector.getSelectedIndex()));
+					filteredSpending = expenserMain.filterExpensesFreq
+							(expenserMain.filterExpensesSource(expenserMain.userAtHand.getSpending(),(String)typeSelector.getItemAt(typeSelector.getSelectedIndex()))
+							,(String)monthSelector.getItemAt(monthSelector.getSelectedIndex()));
 					expenseRepPanel.model.setNumRows(filteredSpending.size());
 					int i = 0;
 					double expenseSum = 0.00f;
@@ -1337,23 +1323,6 @@ class expenseRepPanel extends JPanel {
 			sum += ex.getAmount();
 		}
 		return sum;
-	}
-
-	/**
-	 * Method responsible for filtering data in table based on user's desired filters of source and frequency.
-	 * @param exp Base Expense ArrayList
-	 * @param source Source as String
-	 * @param freq Frequency as String
-	 * @return New ArrayList of filtered data
-	 */
-	static ArrayList<Expense> filterExpenses(ArrayList<Expense> exp, String source, String freq) {
-		ArrayList<Expense> filteredExpenses = new ArrayList<>();
-		for(Expense ex : exp) {
-			if(ex.getSource().equals(source) && (String.valueOf(ex.getFrequency()).equals(freq)) ) {
-				filteredExpenses.add(ex);
-			}
-		}
-		return filteredExpenses;
 	}
 }
 
