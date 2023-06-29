@@ -747,6 +747,7 @@ class addItemPanel extends JTabbedPane {
  */
 class importPanel extends JPanel {
 
+	ExpenserMain expenserMain;
 	GridBagConstraints gbConst;
 	JLabel importLbl, selectFileLbl, selectTypeLbl, descriptionLbl;
 	JButton selectFileButton, importButton;
@@ -755,6 +756,9 @@ class importPanel extends JPanel {
 	JComboBox<String> options;
 	File userFile;
 	importPanel() {
+
+		expenserMain = new ExpenserMain();
+		expenserMain.userAtHand = appFrame.user;
 
 		fileChooser = new JFileChooser();
 
@@ -825,6 +829,15 @@ class importPanel extends JPanel {
 		this.add(descriptionLbl, gbConst);
 
 		importButton = new JButton("Import");
+		importButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(options.getItemAt(options.getSelectedIndex()).equalsIgnoreCase("income")) {
+					System.out.println("Income Selected");
+					expenserMain.loadIncomeFile(userFile.getAbsolutePath());
+				}
+			}
+		});
 		gbConst.gridheight = 1;
 		gbConst.gridx = 0;
 		gbConst.gridy = 5;

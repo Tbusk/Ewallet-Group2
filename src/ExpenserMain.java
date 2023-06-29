@@ -1,7 +1,4 @@
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -55,7 +52,7 @@ public class ExpenserMain implements Expenser {
 		try {
 			// Creates new csv file with specified title
 			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("hh.mm.ss-MM-dd-yyyy");
-			String filePath = "src/";
+			String filePath = "";
 			String fileName = reportTitle + dateTimeFormatter.format(LocalDateTime.now()); // title + time & date
 			String fileType = "csv";
 			File reportFile = new File(filePath + fileName + "." + fileType);
@@ -162,7 +159,48 @@ public class ExpenserMain implements Expenser {
 
 	@Override
 	public boolean loadIncomeFile(String filePath) {
-		return false;
+		String lineText = "";
+		BufferedReader bufferedLineReader = null;
+		BufferedReader bufferedTextReader = null;
+		File userFile = new File(filePath);
+		String source = "", month = "", amount = "";
+		try {
+			int lines = 0;
+			bufferedLineReader = new BufferedReader(new FileReader(userFile));
+			bufferedTextReader = new BufferedReader(new FileReader(userFile));
+			while (bufferedLineReader.readLine() != null) {
+				lines++;
+			}
+			Wage wage;
+			for (int i = 0; i < lines; i++) {
+				lineText = bufferedTextReader.readLine();
+				if( i == 0 && lineText.equalsIgnoreCase("source,amount,month")) {
+					System.out.println("File start setup correctly.");
+				} else {
+						source = "";
+						month = "";
+						amount = "";
+						for(int a = 0; a < lineText.indexOf(',', 0); a++) {
+							source += lineText.charAt(a);
+						}
+						for(int b = lineText.indexOf(',') + 1; b < lineText.lastIndexOf(','); b++) {
+							amount += lineText.charAt(b);
+						}
+						for(int c = lineText.lastIndexOf(',') + 1; c < lineText.length(); c++) {
+							month += lineText.charAt(c);
+						}
+						System.out.println("Text read: " + source + "," + amount + "," + month);
+						wage = new Wage(source,Double.parseDouble(amount),month);
+						addMonthlyIncome(wage);
+				}
+			}
+		} catch (FileNotFoundException e) {
+			return false;
+		} catch (IOException e) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override
