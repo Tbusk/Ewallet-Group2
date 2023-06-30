@@ -1106,19 +1106,6 @@ class incomeRepPanel extends JPanel {
 		this.add(lowerPanel, BorderLayout.SOUTH);
 
 	}
-
-	/**
-	 * Method responsible for obtaining total income information for filtered data
-	 * @param wage Filtered ArrayList for income
-	 * @return Total Filtered Income
-	 */
-	static double getIncome(ArrayList<Wage> wage) {
-		double sum = 0.00f;
-		for(Wage w : wage) {
-			sum += w.getAmount();
-		}
-		return sum;
-	}
 }
 
 /**
