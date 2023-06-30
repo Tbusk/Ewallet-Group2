@@ -537,7 +537,7 @@ class addItemPanel extends JTabbedPane {
 						amountIncField.setText("");
 
 						// Update panel totals
-						incomeRepPanel.totalIncomeAmtLbl.setText(String.format("$%.2f",incomeRepPanel.getIncome(expenserMain.userAtHand.getIncome())));
+						// incomeRepPanel.totalIncomeAmtLbl.setText(String.format("$%.2f",incomeRepPanel.getIncome(expenserMain.userAtHand.getIncome())));
 
 						// Update JComboBoxes if
 						if(incomeRepPanel.typeSelector.getItemCount() > 0) {
@@ -555,13 +555,13 @@ class addItemPanel extends JTabbedPane {
 						}
 
 
-						// Update Home Income
+						/*// Update Home Income
 						expenserMain.userAtHand.setBalance(expenserMain.userAtHand.getBalance() + w.getAmount());
-						expenserMain.updateMonthlySavings();
-						homePanel.totalIncomeAmtLbl.setText("$" + String.format("%.2f",expenserMain.userAtHand.getBalance()));
-						homePanel.totalSavingsAmtLbl.setText("$" + String.format("%.2f", expenserMain.userAtHand.getMonthlySavings()));
+						expenserMain.updateMonthlySavings();  // added to updateIncomeValues
+						homePanel.totalIncomeAmtLbl.setText("$" + String.format("%.2f",expenserMain.userAtHand.getBalance())); // added to updateIncomeValues
+						homePanel.totalSavingsAmtLbl.setText("$" + String.format("%.2f", expenserMain.userAtHand.getMonthlySavings())); // added to updateIncomeValues
 
-						// update income table
+						// update income table // added to updateIncomeTable()
 						incomeRepPanel.model.addRow(new Object[]{}); // adding a blank row in the table
 						int i = 0;
 						for(Wage wage : expenserMain.userAtHand.getIncome()) {
@@ -570,7 +570,9 @@ class addItemPanel extends JTabbedPane {
 							incomeRepPanel.incomeTable.setValueAt(wage.getMonth(), i, 2);
 							++i;
 						}
-
+						*/
+						expenserMain.updateIncomeTable();
+						expenserMain.updateIncomeValues(w);
 						// update detailed table by filling it in with wage and expense data
 						int j = 0;
 						incomeRepPanel.model.setNumRows(expenserMain.userAtHand.getIncome().size());
@@ -835,7 +837,9 @@ class importPanel extends JPanel {
 				if(options.getItemAt(options.getSelectedIndex()).equalsIgnoreCase("income")) {
 					System.out.println("Income Selected");
 					expenserMain.loadIncomeFile(userFile.getAbsolutePath());
+					expenserMain.updateIncomeTable();
 				}
+
 			}
 		});
 		gbConst.gridheight = 1;

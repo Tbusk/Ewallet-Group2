@@ -165,29 +165,29 @@ public class ExpenserMain implements Expenser {
 		File userFile = new File(filePath);
 		String source = "", month = "", amount = "";
 		try {
-			int lines = 0;
+			int linesInFile = 0;
 			bufferedLineReader = new BufferedReader(new FileReader(userFile));
 			bufferedTextReader = new BufferedReader(new FileReader(userFile));
 			while (bufferedLineReader.readLine() != null) {
-				lines++;
+				linesInFile++;
 			}
 			Wage wage;
-			for (int i = 0; i < lines; i++) {
+			for (int lineIndex = 0; lineIndex < linesInFile; lineIndex++) {
 				lineText = bufferedTextReader.readLine();
-				if( i == 0 && lineText.equalsIgnoreCase("source,amount,month")) {
+				if( lineIndex == 0 && lineText.equalsIgnoreCase("source,amount,month")) {
 					System.out.println("File start setup correctly.");
 				} else {
 						source = "";
 						month = "";
 						amount = "";
-						for(int a = 0; a < lineText.indexOf(',', 0); a++) {
-							source += lineText.charAt(a);
+						for(int sourceIndex = 0; sourceIndex < lineText.indexOf(',', 0); sourceIndex++) {
+							source += lineText.charAt(sourceIndex);
 						}
-						for(int b = lineText.indexOf(',') + 1; b < lineText.lastIndexOf(','); b++) {
-							amount += lineText.charAt(b);
+						for(int amountindex = lineText.indexOf(',') + 1; amountindex < lineText.lastIndexOf(','); amountindex++) {
+							amount += lineText.charAt(amountindex);
 						}
-						for(int c = lineText.lastIndexOf(',') + 1; c < lineText.length(); c++) {
-							month += lineText.charAt(c);
+						for(int monthIndex = lineText.lastIndexOf(',') + 1; monthIndex < lineText.length(); monthIndex++) {
+							month += lineText.charAt(monthIndex);
 						}
 						System.out.println("Text read: " + source + "," + amount + "," + month);
 						wage = new Wage(source,Double.parseDouble(amount),month);
@@ -199,7 +199,6 @@ public class ExpenserMain implements Expenser {
 		} catch (IOException e) {
 			return false;
 		}
-
 		return true;
 	}
 
@@ -276,6 +275,69 @@ public class ExpenserMain implements Expenser {
 			}
 		}
 		return filteredIncomesSource;
+	}
+
+	/**
+	 * A method that will update income table values based on adding of values through import or the add tool.
+	 */
+	public void updateIncomeTable() {
+
+		incomeRepPanel.model.setNumRows(0);
+		for(int j = 0; j < userAtHand.getIncome().size(); j++ ) {
+			incomeRepPanel.model.addRow(new Object[]{});
+		}
+
+		System.out.println(incomeRepPanel.model.getRowCount());
+		int i = 0;
+		for(Wage wage : userAtHand.getIncome()) {
+			incomeRepPanel.incomeTable.setValueAt(wage.getSource(), i, 0);
+			incomeRepPanel.incomeTable.setValueAt(String.format("$%.2f",wage.getAmount()), i, 1);
+			incomeRepPanel.incomeTable.setValueAt(wage.getMonth(), i, 2);
+			++i;
+		}
+	}
+
+	/**
+	 * A method that will update detailed table values based on adding of values through import or the add tool.
+	 */
+	public void updateDetailedTable() {
+
+	}
+
+	/**
+	 * A method that will update expense table values based on adding of values through import or the add tool.
+	 */
+	public void updateExpenseTable() {
+
+	}
+
+	/**
+	 * A method that will update values based on adding of values through import or the add tool.
+	 * Values on the home page, income page, and expense page will be updated with this.
+	 */
+	public void updateIncomeValues(Wage wage) {
+		incomeRepPanel.totalIncomeAmtLbl.setText(String.format("$%.2f",getTotalIncome(userAtHand.getIncome())));
+		userAtHand.setBalance(userAtHand.getBalance() + wage.getAmount());
+		updateMonthlySavings();
+		homePanel.totalIncomeAmtLbl.setText("$" + String.format("%.2f",userAtHand.getBalance()));
+		homePanel.totalSavingsAmtLbl.setText("$" + String.format("%.2f", userAtHand.getMonthlySavings()));
+	}
+
+	public void updateExpenseValues(Expense expense) {
+
+	}
+
+	/**
+	 * A method that gets the total income for a user based on an inputted ArrayList of type wage.
+	 * @param wage user's income ArrayList
+	 * @return user's total income
+	 */
+	public double getTotalIncome(ArrayList<Wage> wage) {
+		double sum = 0.00f;
+		for(Wage userWage : wage) {
+			sum += userWage.getAmount();
+		}
+		return sum;
 	}
 
 }
