@@ -191,7 +191,24 @@ public class ExpenserMain implements Expenser {
 						}
 						System.out.println("Text read: " + source + "," + amount + "," + month);
 						wage = new Wage(source,Double.parseDouble(amount),month);
+						userAtHand.setBalance(userAtHand.getBalance() + wage.getAmount());
 						addMonthlyIncome(wage);
+						incomeRepPanel.typeSelector.addItem(source);
+
+						if(incomeRepPanel.typeSelector.getItemCount() > 0) {
+							boolean contains = false;
+							for (int i = 0; i < incomeRepPanel.typeSelector.getItemCount(); i++) {
+								if (incomeRepPanel.typeSelector.getItemAt(i).equals(wage.getSource())) {
+									contains = true;
+								}
+							}
+							if (!contains) {
+								incomeRepPanel.typeSelector.addItem(wage.getSource());
+							}
+							} else {
+							incomeRepPanel.typeSelector.addItem(wage.getSource());
+						}
+
 				}
 			}
 		} catch (FileNotFoundException e) {
@@ -282,12 +299,14 @@ public class ExpenserMain implements Expenser {
 	 */
 	public void updateIncomeTable() {
 
+		// Resetting row count - setting it to the income array size
 		incomeRepPanel.model.setNumRows(0);
+
 		for(int j = 0; j < userAtHand.getIncome().size(); j++ ) {
 			incomeRepPanel.model.addRow(new Object[]{});
 		}
 
-		System.out.println(incomeRepPanel.model.getRowCount());
+		// Updating what is displayed on the table
 		int i = 0;
 		for(Wage wage : userAtHand.getIncome()) {
 			incomeRepPanel.incomeTable.setValueAt(wage.getSource(), i, 0);
@@ -315,9 +334,8 @@ public class ExpenserMain implements Expenser {
 	 * A method that will update values based on adding of values through import or the add tool.
 	 * Values on the home page, income page, and expense page will be updated with this.
 	 */
-	public void updateIncomeValues(Wage wage) {
+	public void updateIncomeValues() {
 		incomeRepPanel.totalIncomeAmtLbl.setText(String.format("$%.2f",getTotalIncome(userAtHand.getIncome())));
-		userAtHand.setBalance(userAtHand.getBalance() + wage.getAmount());
 		updateMonthlySavings();
 		homePanel.totalIncomeAmtLbl.setText("$" + String.format("%.2f",userAtHand.getBalance()));
 		homePanel.totalSavingsAmtLbl.setText("$" + String.format("%.2f", userAtHand.getMonthlySavings()));
@@ -338,6 +356,20 @@ public class ExpenserMain implements Expenser {
 			sum += userWage.getAmount();
 		}
 		return sum;
+	}
+
+	/**
+	 * Method responsible for obtaining sources for the combobox selector
+	 * @param updatedWage Wage ArrayList
+	 * @return ArrayList of Strings of sources
+	 */
+	public ArrayList<String> getSources(ArrayList<Wage> updatedWage) {
+		ArrayList<String> sources = new ArrayList<>();
+
+		for(Wage wage : updatedWage) {
+			sources.add(wage.getSource());
+		}
+		return sources;
 	}
 
 }

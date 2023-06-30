@@ -572,7 +572,7 @@ class addItemPanel extends JTabbedPane {
 						}
 						*/
 						expenserMain.updateIncomeTable();
-						expenserMain.updateIncomeValues(w);
+						expenserMain.updateIncomeValues();
 						// update detailed table by filling it in with wage and expense data
 						int j = 0;
 						incomeRepPanel.model.setNumRows(expenserMain.userAtHand.getIncome().size());
@@ -838,6 +838,7 @@ class importPanel extends JPanel {
 					System.out.println("Income Selected");
 					expenserMain.loadIncomeFile(userFile.getAbsolutePath());
 					expenserMain.updateIncomeTable();
+					expenserMain.updateIncomeValues();
 				}
 
 			}
@@ -1030,7 +1031,7 @@ class incomeRepPanel extends JPanel {
 		gbConst.insets = new Insets(0,20,20,20);
 		upperPanel.add(monthSelector,gbConst);
 
-		incomeRepPanel.typeSelector = new JComboBox<>(getSources(Income).toArray());
+		incomeRepPanel.typeSelector = new JComboBox<>(expenserMain.getSources(Income).toArray());
 		typeSelector.setFont(new Font(null, Font.PLAIN, 24));
 		typeSelector.setPreferredSize(new Dimension(200,50));
 		gbConst.gridx = 2;
@@ -1114,19 +1115,6 @@ class incomeRepPanel extends JPanel {
 		lowerPanel.add(Box.createRigidArea(new Dimension(25,50)));
 		this.add(lowerPanel, BorderLayout.SOUTH);
 
-	}
-
-	/**
-	 * Method responsible for obtaining sources for the combobox selector
-	 * @param wage Wage ArrayList
-	 * @return ArrayList of Strings of sources
-	 */
-	private ArrayList<String> getSources(ArrayList<Wage> wage) {
-		ArrayList<String> sources = new ArrayList<>();
-		for(Wage w : wage) {
-			sources.add(w.getSource());
-		}
-		return sources;
 	}
 
 	/**
