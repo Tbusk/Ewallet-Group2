@@ -536,9 +536,6 @@ class addItemPanel extends JTabbedPane {
 						monthComboBox.setSelectedItem(0);
 						amountIncField.setText("");
 
-						// Update panel totals
-						// incomeRepPanel.totalIncomeAmtLbl.setText(String.format("$%.2f",incomeRepPanel.getIncome(expenserMain.userAtHand.getIncome())));
-
 						// Update JComboBoxes if
 						if(incomeRepPanel.typeSelector.getItemCount() > 0) {
 							boolean contains = false;
@@ -555,22 +552,6 @@ class addItemPanel extends JTabbedPane {
 						}
 
 
-						/*// Update Home Income
-						expenserMain.userAtHand.setBalance(expenserMain.userAtHand.getBalance() + w.getAmount());
-						expenserMain.updateMonthlySavings();  // added to updateIncomeValues
-						homePanel.totalIncomeAmtLbl.setText("$" + String.format("%.2f",expenserMain.userAtHand.getBalance())); // added to updateIncomeValues
-						homePanel.totalSavingsAmtLbl.setText("$" + String.format("%.2f", expenserMain.userAtHand.getMonthlySavings())); // added to updateIncomeValues
-
-						// update income table // added to updateIncomeTable()
-						incomeRepPanel.model.addRow(new Object[]{}); // adding a blank row in the table
-						int i = 0;
-						for(Wage wage : expenserMain.userAtHand.getIncome()) {
-							incomeRepPanel.incomeTable.setValueAt(wage.getSource(), i, 0);
-							incomeRepPanel.incomeTable.setValueAt(String.format("$%.2f",wage.getAmount()), i, 1);
-							incomeRepPanel.incomeTable.setValueAt(wage.getMonth(), i, 2);
-							++i;
-						}
-						*/
 						expenserMain.updateIncomeTable();
 						expenserMain.updateIncomeValues();
 						// update detailed table by filling it in with wage and expense data
@@ -779,13 +760,17 @@ class importPanel extends JPanel {
 		this.add(importLbl, gbConst);
 
 		selectFileButton = new JButton("File");
-		selectFileButton.addActionListener(new ActionListener() {
+		selectFileButton.addActionListener(new ActionListener() { // When the select file button is pressed
 			@Override
 			public void actionPerformed(ActionEvent e) { // File chooser component
 				if (e.getSource() == selectFileButton) {
 					int userDecision = fileChooser.showOpenDialog(null); // opens file chooser window
 					if(userDecision == JFileChooser.APPROVE_OPTION) { // if file is selected
 						userFile = fileChooser.getSelectedFile();
+						if(!userFile.getAbsolutePath().endsWith(".csv")){ // if user selects a non-csv file, the user will be alerted.
+							JOptionPane.showMessageDialog(null,"Warning.  Only csv files are supported.  Select something else.", "Warning!", JOptionPane.ERROR_MESSAGE);
+							System.out.println("User selected a non csv file!");
+						}
 						System.out.println("The user selected: " + userFile.getAbsolutePath());
 					} else if (userDecision == JFileChooser.CANCEL_OPTION) { // if user backs out
 						System.out.println("The user canceled the operation.");
@@ -821,7 +806,7 @@ class importPanel extends JPanel {
 		options.setFont(new Font(null, Font.PLAIN, 24));
 		this.add(options, gbConst);
 
-		descriptionLbl = new JLabel("<html><body style='text-align: center'>Note: Only CSV files are supported.  <br><br>Once you select a file, click the import button.</body></html>");
+		descriptionLbl = new JLabel("<html><body style='text-align: center'>Note: Only csv files are supported. <br><br> The format of the csv file matters.  <br>The first line of the file needs to contain \"source,amount,month\" or <br>\"source,amount,frequency\", depending on the type<br><br>Once you select a file, click the import button.</body></html>");
 		gbConst.gridwidth = 2;
 		gbConst.gridheight = 2;
 		gbConst.gridx = 0;
@@ -833,12 +818,17 @@ class importPanel extends JPanel {
 		importButton = new JButton("Import");
 		importButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) { // When the import button is pressed
 				if(options.getItemAt(options.getSelectedIndex()).equalsIgnoreCase("income")) {
 					System.out.println("Income Selected");
-					expenserMain.loadIncomeFile(userFile.getAbsolutePath());
-					expenserMain.updateIncomeTable();
-					expenserMain.updateIncomeValues();
+					if(userFile == null) { // if there isn't a file selected
+						JOptionPane.showMessageDialog(null,"No file selected!", "Warning User!", JOptionPane.ERROR_MESSAGE);
+					} else { // when there is a csv file selected
+						expenserMain.loadIncomeFile(userFile.getAbsolutePath());
+						expenserMain.updateIncomeTable();
+						expenserMain.updateDetailedTable();
+						expenserMain.updateIncomeValues();
+					}
 				}
 
 			}
