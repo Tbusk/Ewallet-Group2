@@ -532,11 +532,8 @@ class addItemPanel extends JTabbedPane {
 						month = String.valueOf(monthComboBox.getItemAt(monthComboBox.getSelectedIndex()));
 						Wage w = new Wage(source, amount, month);
 						expenserMain.userAtHand.addMonthlyIncome(w); // adding it to the user's wage arraylist
-						nameIncField.setText("");
-						monthComboBox.setSelectedItem(0);
-						amountIncField.setText("");
 
-						// Update JComboBoxes if
+						// Adds item to combobox for type filter if name is unique
 						if(incomeRepPanel.typeSelector.getItemCount() > 0) {
 							boolean contains = false;
 							for (int i = 0; i < incomeRepPanel.typeSelector.getItemCount(); i++) {
@@ -551,28 +548,15 @@ class addItemPanel extends JTabbedPane {
 							incomeRepPanel.typeSelector.addItem(w.getSource());
 						}
 
-
+						// Updating tables and values
 						expenserMain.updateIncomeTable();
 						expenserMain.updateIncomeValues();
-						// update detailed table by filling it in with wage and expense data
-						int j = 0;
-						incomeRepPanel.model.setNumRows(expenserMain.userAtHand.getIncome().size());
-						detailedRepPanel.model.addRow(new Object[]{}); // adding a blank row in the table
-						for(Wage wge : expenserMain.userAtHand.getIncome()) {
-							detailedRepPanel.detailedTable.setValueAt("Income", j, 0);
-							detailedRepPanel.detailedTable.setValueAt(wge.getSource(), j, 1);
-							detailedRepPanel.detailedTable.setValueAt(String.format("$%.2f",wge.getAmount()), j, 2);
-							detailedRepPanel.detailedTable.setValueAt(wge.getMonth(), j, 3);
-							++j;
-						}
+						expenserMain.updateDetailedTable();
 
-						for(Expense Ex : expenserMain.userAtHand.getSpending()) {
-							detailedRepPanel.detailedTable.setValueAt("Expense", j, 0);
-							detailedRepPanel.detailedTable.setValueAt(Ex.getSource(), j, 1);
-							detailedRepPanel.detailedTable.setValueAt(String.format("$%.2f",Ex.getAmount()), j, 2);
-							detailedRepPanel.detailedTable.setValueAt(Ex.getFrequency(), j, 3);
-							++j;
-						}
+						// Clearing fields
+						nameIncField.setText("");
+						monthComboBox.setSelectedItem(0);
+						amountIncField.setText("");
 
 					}
 
@@ -657,10 +641,9 @@ class addItemPanel extends JTabbedPane {
 						source = nameExpField.getText();
 						Expense Ex = new Expense(source, amount, yearlyFrequency); // new expense object
 						expenserMain.addExpense(Ex); // adding it to the user's spending arraylist
+						expenserMain.updateExpenseValues();
 
-						expenseRepPanel.totalExpenseAmtLbl.setText(String.format("$%.2f",expenseRepPanel.getExpense(expenserMain.userAtHand.getSpending())));
-
-						// Update JComboBoxes
+						// Adds item to combobox for type filter if name is unique
 						if(expenseRepPanel.typeSelector.getItemCount() > 0) {
 							boolean contains = false;
 							for (int i = 0; i < expenseRepPanel.typeSelector.getItemCount(); i++) {
@@ -677,38 +660,8 @@ class addItemPanel extends JTabbedPane {
 
 
 						// update expense table and expenses on home
-						expenserMain.userAtHand.setExpenses(0.00f);
-						expenseRepPanel.model.addRow(new Object[]{}); // adding a blank row in the table
-						int i = 0;
-						for(Expense Exp : expenserMain.userAtHand.getSpending()) {
-							expenserMain.userAtHand.setExpenses(expenserMain.userAtHand.getExpenses() + Exp.amount);
-							expenseRepPanel.spendingTable.setValueAt(Exp.getSource(), i, 0);
-							expenseRepPanel.spendingTable.setValueAt(String.format("$%.2f",Exp.getAmount()), i, 1);
-							expenseRepPanel.spendingTable.setValueAt(Exp.getFrequency(), i, 2);
-							++i;
-						}
-						expenserMain.updateMonthlySavings();
-						homePanel.totalExpensesAmtLbl.setText("$" + String.format("%.2f",expenserMain.userAtHand.getExpenses()));
-						homePanel.totalSavingsAmtLbl.setText("$" + String.format("%.2f", expenserMain.userAtHand.getMonthlySavings()));
-
-						// update detailed table by filling it in with wage and expense data
-						i = 0;
-						detailedRepPanel.model.addRow(new Object[]{}); // adding a blank row in the table
-						for(Expense Exp : expenserMain.userAtHand.getSpending()) {
-							detailedRepPanel.detailedTable.setValueAt("Expense", i, 0);
-							detailedRepPanel.detailedTable.setValueAt(Exp.getSource(), i, 1);
-							detailedRepPanel.detailedTable.setValueAt(String.format("$%.2f",Exp.getAmount()), i, 2);
-							detailedRepPanel.detailedTable.setValueAt(Exp.getFrequency(), i, 3);
-							++i;
-						}
-
-						for(Wage wage : expenserMain.userAtHand.getIncome()) {
-							detailedRepPanel.detailedTable.setValueAt("Income", i, 0);
-							detailedRepPanel.detailedTable.setValueAt(wage.getSource(), i, 1);
-							detailedRepPanel.detailedTable.setValueAt(String.format("$%.2f",wage.getAmount()), i, 2);
-							detailedRepPanel.detailedTable.setValueAt(wage.getMonth(), i, 3);
-							++i;
-						}
+						expenserMain.updateExpenseTable();
+						expenserMain.updateDetailedTable();
 
 						// Clearing fields
 						nameExpField.setText("");
@@ -828,6 +781,16 @@ class importPanel extends JPanel {
 						expenserMain.updateIncomeTable();
 						expenserMain.updateDetailedTable();
 						expenserMain.updateIncomeValues();
+					}
+				} else if (options.getItemAt(options.getSelectedIndex()).equalsIgnoreCase("expense")) {
+					System.out.println("Expense Selected");
+					if(userFile == null) { // if there isn't a file selected
+						JOptionPane.showMessageDialog(null,"No file selected!", "Warning User!", JOptionPane.ERROR_MESSAGE);
+					} else { // when there is a csv file selected
+						expenserMain.loadExpenseFile(userFile.getAbsolutePath());
+						expenserMain.updateExpenseTable();
+						expenserMain.updateDetailedTable();
+						expenserMain.updateExpenseValues();
 					}
 				}
 
@@ -1021,7 +984,7 @@ class incomeRepPanel extends JPanel {
 		gbConst.insets = new Insets(0,20,20,20);
 		upperPanel.add(monthSelector,gbConst);
 
-		incomeRepPanel.typeSelector = new JComboBox<>(expenserMain.getSources(Income).toArray());
+		incomeRepPanel.typeSelector = new JComboBox<>(expenserMain.getIncomeSources(Income).toArray());
 		typeSelector.setFont(new Font(null, Font.PLAIN, 24));
 		typeSelector.setPreferredSize(new Dimension(200,50));
 		gbConst.gridx = 2;
@@ -1198,7 +1161,7 @@ class expenseRepPanel extends JPanel {
 		gbConst.insets = new Insets(0,20,20,20);
 		upperPanel.add(monthSelector,gbConst);
 
-		expenseRepPanel.typeSelector = new JComboBox<>(getSources(Spending).toArray());
+		expenseRepPanel.typeSelector = new JComboBox<>(expenserMain.getExpenseSources(Spending).toArray());
 		typeSelector.setFont(new Font(null, Font.PLAIN, 24));
 		typeSelector.setPreferredSize(new Dimension(200,50));
 		gbConst.gridx = 2;
@@ -1285,26 +1248,6 @@ class expenseRepPanel extends JPanel {
 		lowerPanel.add(Box.createRigidArea(new Dimension(25,50)));
 		this.add(lowerPanel, BorderLayout.SOUTH);
 
-	}
-	private ArrayList<String> getSources(ArrayList<Expense> Ex) {
-		ArrayList<String> sources = new ArrayList<>();
-		for(Expense ex : Ex) {
-			sources.add(ex.getSource());
-		}
-		return sources;
-	}
-
-	/**
-	 * Method responsible for getting filtered data's total expenses
-	 * @param Ex ArrayList of Expense
-	 * @return Sum of Expenses
-	 */
-	static double getExpense(ArrayList<Expense> Ex) {
-		double sum = 0.00f;
-		for(Expense ex : Ex) {
-			sum += ex.getAmount();
-		}
-		return sum;
 	}
 }
 
