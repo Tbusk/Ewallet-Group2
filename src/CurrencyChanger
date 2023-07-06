@@ -1,0 +1,96 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
+
+public class CurrencyBalanceApp implements User {
+    private JFrame frame;
+    private JPanel mainPanel;
+    private JPanel balancePanel;
+    private JPanel currencyPanel;
+    private JPanel backPanel;
+    private JComboBox<String> currencyComboBox;
+    private JLabel balanceLabel;
+
+    private Map<String, Double> currencyRates;
+
+    private double currentBalance;
+
+    public CurrencyBalanceApp(monthlySavings){
+        // Initialize the currency exchange rates
+        currencyRates = new HashMap<>();
+        currencyRates.put("USD", 1.0);
+        currencyRates.put("EUR", 0.85);
+        currencyRates.put("GBP", 0.72);
+
+        // Initialize the current balance
+        currentBalance = monthlySavings;
+
+        // Create the GUI components
+        frame = new JFrame("Currency Balance App");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        mainPanel = new JPanel(new CardLayout());
+
+        // Set up the balance panel
+        balancePanel = new JPanel();
+        balanceLabel = new JLabel();
+        balancePanel.add(new JLabel("Current Balance: "));
+        balancePanel.add(balanceLabel);
+
+        // Set up the currency panel
+        currencyPanel = new JPanel();
+        currencyComboBox = new JComboBox<>(currencyRates.keySet().toArray(new String[0]));
+        currencyComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedCurrency = (String) currencyComboBox.getSelectedItem();
+                if (selectedCurrency != null) {
+                    double exchangeRate = currencyRates.get(selectedCurrency);
+                    double convertedBalance = currentBalance * exchangeRate;
+                    DecimalFormat df = new DecimalFormat("#,##0.00");
+                    balanceLabel.setText(df.format(convertedBalance) + " " + selectedCurrency);
+                }
+            }
+        });
+        currencyPanel.add(new JLabel("Select Currency: "));
+        currencyPanel.add(currencyComboBox);
+
+        // Set up the back panel
+        backPanel = new JPanel();
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+                cardLayout.previous(mainPanel);
+            }
+        });
+        backPanel.add(backButton);
+
+        // Add panels to the main panel
+        mainPanel.add(balancePanel, "BALANCE");
+        mainPanel.add(currencyPanel, "CURRENCY");
+
+        // Set the initial screen
+        CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+        cardLayout.show(mainPanel, "BALANCE");
+
+        // Set up the frame
+        frame.getContentPane().add(mainPanel);
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new CurrencyBalanceApp();
+            }
+        });
+    }
+}
