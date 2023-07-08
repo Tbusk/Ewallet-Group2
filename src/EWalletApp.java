@@ -139,7 +139,7 @@ class appFrame extends JFrame {
 	ExpenserMain expenserMain;
 	JMenuBar navMenuBar;
 	JMenu navMenu;
-	JMenuItem homeNav, addItemNav, importNav, estimateNav, incomeReportNav, expenseReportNav, detailedReportNav, loginNav; // different pages
+	JMenuItem homeNav, addItemNav, importNav, estimateNav, incomeReportNav, expenseReportNav, detailedReportNav, loginNav, createAccNav; // different pages
 
 	appFrame(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -151,6 +151,7 @@ class appFrame extends JFrame {
 		expenserMain.userAtHand = user;
 		
 		loginPanel lPanel = new loginPanel();
+		createAccountPanel createAccPanel = new createAccountPanel();
 		homePanel hPanel = new homePanel();
 		addItemPanel addItmPanel = new addItemPanel();
 		importPanel impPanel = new importPanel();
@@ -322,6 +323,27 @@ class appFrame extends JFrame {
 				repaint();
 			}
 		});
+		
+		createAccNav = new JMenuItem("<html><p style='margin-left:15'>Create Account"); // Add Items Page
+		createAccNav.addMouseListener(new MouseAdapter() {
+			// once the page is clicked and released, it will be displayed while discarding previous JPanel instead of storing it
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+				super.mouseClicked(e);
+				getContentPane().removeAll();
+				getContentPane().add(createAccPanel);
+				revalidate();
+				repaint();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				super.mouseReleased(e);
+				revalidate();
+				repaint();
+			}
+		});
 
 		// Updating font size of menu and menu items
 		navMenu.setFont(new Font(null, Font.PLAIN, 24));
@@ -333,6 +355,7 @@ class appFrame extends JFrame {
 		expenseReportNav.setFont(new Font(null, Font.PLAIN, 20));
 		detailedReportNav.setFont(new Font(null, Font.PLAIN, 20));
 		loginNav.setFont(new Font(null, Font.PLAIN, 20));
+		createAccNav.setFont(new Font(null, Font.PLAIN, 20));
 
 		// Adding items to the navigation menu
 		navMenu.add(homeNav);
@@ -343,6 +366,7 @@ class appFrame extends JFrame {
 		navMenu.add(expenseReportNav);
 		navMenu.add(detailedReportNav);
 		navMenu.add(loginNav);
+		navMenu.add(createAccNav);
 		navMenuBar.add(navMenu);
 		
 
@@ -1407,4 +1431,81 @@ class loginPanel extends JPanel {
 		
 		
 	}
+}
+
+class createAccountPanel extends JPanel {
+	JLabel usernameLbl, passwordLbl, confPasswordLbl, createAccLbl;
+	GridBagConstraints gbConst;
+	JTextField usernameField, passwordField, confPasswordField;
+	JButton createAccBtn;
+	
+	createAccountPanel() {
+		usernameLbl = new JLabel("Enter Username:");
+		passwordLbl = new JLabel("Enter Password:");
+		confPasswordLbl = new JLabel("Confirm Password:");
+		createAccLbl = new JLabel("Create Account");
+		gbConst = new GridBagConstraints();
+		this.setLayout(new GridBagLayout());
+		
+		usernameField = new JTextField();
+		usernameField.setPreferredSize(new Dimension(200, 40));
+		passwordField = new JTextField();
+		passwordField.setPreferredSize(new Dimension(200, 40));
+		confPasswordField = new JTextField();
+		confPasswordField.setPreferredSize(new Dimension(200, 40));
+		
+		createAccBtn = new JButton("Create Account");
+		createAccBtn.setPreferredSize(new Dimension(200, 40));
+		
+		gbConst.gridx = 1;
+		gbConst.gridy = 0;
+		gbConst.gridwidth = 2;
+		gbConst.insets = new Insets(0,20,40,20);
+		createAccLbl.setFont(new Font(null, Font.PLAIN, 44));
+		this.add(createAccLbl, gbConst);
+		
+		gbConst.gridx = 0;
+		gbConst.gridy = 1;
+		gbConst.insets = new Insets(0,40,40,0);
+		usernameLbl.setFont(new Font(null, Font.PLAIN, 32));
+		this.add(usernameLbl, gbConst);
+
+		gbConst.gridx = -1;
+		gbConst.gridy = 1;
+		gbConst.insets = new Insets(20,0,40,40);
+		usernameField.setFont(new Font(null, Font.PLAIN, 32));
+		this.add(usernameField, gbConst);
+		
+		gbConst.gridx = 0;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(0,40,40,0);
+		passwordLbl.setFont(new Font(null, Font.PLAIN, 32));
+		this.add(passwordLbl, gbConst);
+
+		gbConst.gridx = -1;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(20,0,40,40);
+		passwordField.setFont(new Font(null, Font.PLAIN, 32));
+		this.add(passwordField, gbConst);
+		
+		gbConst.gridx = 0;
+		gbConst.gridy = 3;
+		gbConst.insets = new Insets(0,40,40,0);
+		confPasswordLbl.setFont(new Font(null, Font.PLAIN, 32));
+		this.add(confPasswordLbl, gbConst);
+
+		gbConst.gridx = -1;
+		gbConst.gridy = 3;
+		gbConst.insets = new Insets(20,0,40,40);
+		confPasswordField.setFont(new Font(null, Font.PLAIN, 32));
+		this.add(confPasswordField, gbConst);
+		
+		gbConst.gridx = 1;
+		gbConst.gridy = 4;
+		gbConst.insets = new Insets(20, 20, 20, 20);
+		createAccBtn.setFont(new Font(null, Font.PLAIN, 14));
+		this.add(createAccBtn, gbConst);
+		
+	}
+	
 }
