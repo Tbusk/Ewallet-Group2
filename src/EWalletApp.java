@@ -1382,12 +1382,13 @@ class loginPanel extends JPanel {
 	JLabel usernameLbl, passwordLbl, loginLbl;
 	GridBagConstraints gbConst;
 	JTextField usernameIncField, passwordIncField;
-	JPanel usernamePane, passwordPane;
+	JButton loginBtn;
 	
 	loginPanel() {
 		loginLbl = new JLabel("LOGIN");
 		usernameLbl = new JLabel("Username: ");
 		passwordLbl = new JLabel("Password: ");
+		loginBtn = new JButton("Login");
 		gbConst = new GridBagConstraints();
 		this.setLayout(new GridBagLayout());
 		
@@ -1399,35 +1400,42 @@ class loginPanel extends JPanel {
 		gbConst.gridx = 0;
 		gbConst.gridy = 0;
 		gbConst.gridwidth = 2;
-		gbConst.insets = new Insets(-150,20,60,20);
+		gbConst.insets = new Insets(20,10,20,40);
 		loginLbl.setFont(new Font(null, Font.PLAIN, 44));
 		this.add(loginLbl, gbConst);
 		
 		gbConst.gridx = 1;
-		gbConst.gridy = 1;
-		gbConst.insets = new Insets(-20,30,30,30);
+		gbConst.gridy = 2;
+		gbConst.gridwidth = 1;
+		gbConst.insets = new Insets(0,5,20,30);
 		passwordIncField.setFont(new Font(null, Font.PLAIN, 28));
 		this.add(passwordIncField, gbConst);
-		
+
 		gbConst.gridx = 1;
 		gbConst.gridy = 1;
-		gbConst.insets = new Insets(-124,30,30,30);
+		gbConst.insets = new Insets(0,5,20,30);
 		usernameIncField.setFont(new Font(null, Font.PLAIN, 28));
 		this.add(usernameIncField, gbConst);
-		
+
 		gbConst.gridx = 0;
-		gbConst.gridy = 1;
-		gbConst.gridwidth = 2;
-		gbConst.insets = new Insets(-5,-300,60,20);
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(0,0,20,20);
 		passwordLbl.setFont(new Font(null, Font.PLAIN, 44));
 		this.add(passwordLbl, gbConst);
-		
+
 		gbConst.gridx = 0;
 		gbConst.gridy = 1;
-		gbConst.gridwidth = 2;
-		gbConst.insets = new Insets(-100,-300,60,20);
+		gbConst.insets = new Insets(0,0,20,20);
 		usernameLbl.setFont(new Font(null, Font.PLAIN, 44));
 		this.add(usernameLbl, gbConst);
+		
+		gbConst.gridx = 0;
+		gbConst.gridy = 4;
+		gbConst.gridwidth = 2;
+		gbConst.insets = new Insets(20,30,30,30);
+		loginBtn.setFont(new Font(null, Font.PLAIN, 28));
+		loginBtn.setPreferredSize(new Dimension(150,60));
+		this.add(loginBtn, gbConst);
 		
 		
 	}
@@ -1509,3 +1517,4 @@ class createAccountPanel extends JPanel {
 	}
 	
 }
+
