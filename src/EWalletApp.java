@@ -139,7 +139,7 @@ class appFrame extends JFrame {
 	ExpenserMain expenserMain;
 	JMenuBar navMenuBar;
 	JMenu navMenu;
-	JMenuItem homeNav, addItemNav, importNav, estimateNav, incomeReportNav, expenseReportNav, detailedReportNav; // different pages
+	JMenuItem homeNav, addItemNav, importNav, estimateNav, incomeReportNav, expenseReportNav, detailedReportNav, loginNav, createAccNav; // different pages
 
 	appFrame(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -149,7 +149,8 @@ class appFrame extends JFrame {
 		user = new User("Kevin", "Abc!1234"); // temporary solution until login is set up
 		expenserMain = new ExpenserMain();
 		expenserMain.userAtHand = user;
-
+		
+		loginPanel lPanel = new loginPanel();
 		homePanel hPanel = new homePanel();
 		addItemPanel addItmPanel = new addItemPanel();
 		importPanel impPanel = new importPanel();
@@ -300,6 +301,48 @@ class appFrame extends JFrame {
 				repaint();
 			}
 		});
+		
+		loginNav = new JMenuItem("<html><p style='margin-left:15'>Login"); // Add Items Page
+		loginNav.addMouseListener(new MouseAdapter() {
+			// once the page is clicked and released, it will be displayed while discarding previous JPanel instead of storing it
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+				super.mouseClicked(e);
+				getContentPane().removeAll();
+				getContentPane().add(lPanel);
+				revalidate();
+				repaint();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				super.mouseReleased(e);
+				revalidate();
+				repaint();
+			}
+		});
+		
+		createAccNav = new JMenuItem("<html><p style='margin-left:15'>Create Account"); // Add Items Page
+		createAccNav.addMouseListener(new MouseAdapter() {
+			// once the page is clicked and released, it will be displayed while discarding previous JPanel instead of storing it
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+				super.mouseClicked(e);
+				getContentPane().removeAll();
+				getContentPane().add(lPanel);
+				revalidate();
+				repaint();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				super.mouseReleased(e);
+				revalidate();
+				repaint();
+			}
+		});
 
 		// Updating font size of menu and menu items
 		navMenu.setFont(new Font(null, Font.PLAIN, 24));
@@ -310,6 +353,8 @@ class appFrame extends JFrame {
 		incomeReportNav.setFont(new Font(null, Font.PLAIN, 20));
 		expenseReportNav.setFont(new Font(null, Font.PLAIN, 20));
 		detailedReportNav.setFont(new Font(null, Font.PLAIN, 20));
+		loginNav.setFont(new Font(null, Font.PLAIN, 20));
+		createAccNav.setFont(new Font(null, Font.PLAIN, 20));
 
 		// Adding items to the navigation menu
 		navMenu.add(homeNav);
@@ -319,7 +364,10 @@ class appFrame extends JFrame {
 		navMenu.add(incomeReportNav);
 		navMenu.add(expenseReportNav);
 		navMenu.add(detailedReportNav);
+		navMenu.add(loginNav);
+		navMenu.add(createAccNav);
 		navMenuBar.add(navMenu);
+		
 
 		this.setJMenuBar(navMenuBar);
 		this.setLayout(new CardLayout());
@@ -1328,3 +1376,67 @@ class detailedRepPanel extends JPanel {
 	}
 
 }
+
+class loginPanel extends JPanel {
+	JLabel usernameLbl, passwordLbl, loginLbl;
+	GridBagConstraints gbConst;
+	JTextField usernameIncField, passwordIncField;
+	JButton loginBtn;
+	
+	loginPanel() {
+		loginLbl = new JLabel("LOGIN");
+		usernameLbl = new JLabel("Username: ");
+		passwordLbl = new JLabel("Password: ");
+		loginBtn = new JButton("Login");
+		gbConst = new GridBagConstraints();
+		this.setLayout(new GridBagLayout());
+		
+		passwordIncField = new JTextField();
+		passwordIncField.setPreferredSize(new Dimension(200, 40));
+		usernameIncField = new JTextField();
+		usernameIncField.setPreferredSize(new Dimension(200, 40));
+		
+		gbConst.gridx = 0;
+		gbConst.gridy = 0;
+		gbConst.gridwidth = 2;
+		gbConst.insets = new Insets(20,10,20,40);
+		loginLbl.setFont(new Font(null, Font.PLAIN, 44));
+		this.add(loginLbl, gbConst);
+		
+		gbConst.gridx = 1;
+		gbConst.gridy = 2;
+		gbConst.gridwidth = 1;
+		gbConst.insets = new Insets(0,5,20,30);
+		passwordIncField.setFont(new Font(null, Font.PLAIN, 28));
+		this.add(passwordIncField, gbConst);
+
+		gbConst.gridx = 1;
+		gbConst.gridy = 1;
+		gbConst.insets = new Insets(0,5,20,30);
+		usernameIncField.setFont(new Font(null, Font.PLAIN, 28));
+		this.add(usernameIncField, gbConst);
+
+		gbConst.gridx = 0;
+		gbConst.gridy = 2;
+		gbConst.insets = new Insets(0,0,20,20);
+		passwordLbl.setFont(new Font(null, Font.PLAIN, 44));
+		this.add(passwordLbl, gbConst);
+
+		gbConst.gridx = 0;
+		gbConst.gridy = 1;
+		gbConst.insets = new Insets(0,0,20,20);
+		usernameLbl.setFont(new Font(null, Font.PLAIN, 44));
+		this.add(usernameLbl, gbConst);
+		
+		gbConst.gridx = 0;
+		gbConst.gridy = 4;
+		gbConst.gridwidth = 2;
+		gbConst.insets = new Insets(20,30,30,30);
+		loginBtn.setFont(new Font(null, Font.PLAIN, 28));
+		loginBtn.setPreferredSize(new Dimension(150,60));
+		this.add(loginBtn, gbConst);
+		
+		
+	}
+}
+
