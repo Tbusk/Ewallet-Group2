@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 public class EWalletApp {
 	//this is the app class, has the GUI and create one object of your expense calculator class. The expense calculator class is the implementation of the Expenser interface
-	private ArrayList<User> AllData;
+	//private ArrayList<User> AllData;
 
 	/**
 	 * Method responsible for creating a user account.  It adds username and password to a UserCredentials.csv file.
@@ -28,7 +28,7 @@ public class EWalletApp {
 
 		if (!checkForRepeatUsernames(username) && isComplexPassword(password)) { // If there are no repeat usernames and password is valid, a new account will be created and stored.
 			User user = new User(username, password);
-			AllData.add(user);
+			//AllData.add(user);
 
 			try { // Writes username and password to file in csv format
 				FileOutputStream fileOutputStream = new FileOutputStream("src//UserCredentials.csv", true);
@@ -1442,10 +1442,12 @@ class loginPanel extends JPanel {
 }
 
 class createAccountPanel extends JPanel {
+	EWalletApp eWalletApp = new EWalletApp();
 	JLabel usernameLbl, passwordLbl, confPasswordLbl, createAccLbl;
 	GridBagConstraints gbConst;
 	JTextField usernameField, passwordField, confPasswordField;
 	JButton createAccBtn;
+	String username, password, confPassword;
 	
 	createAccountPanel() {
 		usernameLbl = new JLabel("Enter Username:");
@@ -1513,6 +1515,21 @@ class createAccountPanel extends JPanel {
 		gbConst.insets = new Insets(20, 20, 20, 20);
 		createAccBtn.setFont(new Font(null, Font.PLAIN, 14));
 		this.add(createAccBtn, gbConst);
+		
+		createAccBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource() == createAccBtn) {
+					if(usernameField.getText().length() > 0 && passwordField.getText().length() > 0 && confPasswordField.getText().length() > 0) {
+						username = usernameField.getText();
+						password = passwordField.getText();
+						confPassword = confPasswordField.getText();
+						if(confPassword.equals(password)) {
+							eWalletApp.CreateUser(username, password);
+						}
+					}
+				}
+			}
+		});
 		
 	}
 	
