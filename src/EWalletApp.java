@@ -1493,10 +1493,10 @@ class loginPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				username = usernameIncField.getText();
 				password = passwordIncField.getText();
-				if(eWalletApp.CheckUsername(username) == true && eWalletApp.CheckPassword(username, password) == true) {
+				if(eWalletApp.CheckUsername(username) && eWalletApp.CheckPassword(username, password)) {
 					usernameIncField.setText("");
 					passwordIncField.setText("");
-					System.out.println("Login Successsful");
+					System.out.println("Login Successful");
 					JOptionPane.showMessageDialog(null,"Login Successful.  Welcome " + username + ".");
 				} else {
 					JOptionPane.showMessageDialog(null,"Incorrect Credentials!");
@@ -1512,7 +1512,7 @@ class createAccountPanel extends JPanel {
 	EWalletApp eWalletApp = new EWalletApp();
 	JLabel usernameLbl, passwordLbl, confPasswordLbl, createAccLbl;
 	GridBagConstraints gbConst;
-	JTextField usernameField, passwordField, confPasswordField;
+	static JTextField usernameField, passwordField, confPasswordField;
 	JButton createAccBtn;
 	String username, password, confPassword;
 	
@@ -1591,10 +1591,10 @@ class createAccountPanel extends JPanel {
 					confPassword = confPasswordField.getText();
 					if(usernameField.getText().length() > 0 && passwordField.getText().length() > 0 && confPasswordField.getText().length() > 0) {
 						if(confPassword.equals(password)) {
-							eWalletApp.CreateUser(username, password);
 							if(eWalletApp.checkForRepeatUsernames(usernameField.getText())) {
 								JOptionPane.showMessageDialog(null, "Username taken. Please choose another.");
 							} else {
+								eWalletApp.CreateUser(username, password);
 								JOptionPane.showMessageDialog(null, "User created successfully.");
 								usernameField.setText("");
 								passwordField.setText("");
@@ -1603,6 +1603,8 @@ class createAccountPanel extends JPanel {
 						} else {
 							JOptionPane.showMessageDialog(null, "Passwords do not match!");
 						}
+					} else {
+						JOptionPane.showMessageDialog(null,"Not all fields filled out.  Please fill them out.");
 					}
 				}
 			}
