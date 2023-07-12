@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 public class EWalletApp {
 	//this is the app class, has the GUI and create one object of your expense calculator class. The expense calculator class is the implementation of the Expenser interface
-	//private ArrayList<User> AllData;
+	private ArrayList<User> AllData = new ArrayList<>();
 
 	/**
 	 * Method responsible for creating a user account.  It adds username and password to a UserCredentials.csv file.
@@ -28,7 +28,7 @@ public class EWalletApp {
 
 		if (!checkForRepeatUsernames(username) && isComplexPassword(password)) { // If there are no repeat usernames and password is valid, a new account will be created and stored.
 			User user = new User(username, password);
-			//AllData.add(user);
+			AllData.add(user);
 
 			try { // Writes username and password to file in csv format
 				FileOutputStream fileOutputStream = new FileOutputStream("src//UserCredentials.csv", true);
@@ -43,6 +43,46 @@ public class EWalletApp {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public boolean CheckUsername(String username) {
+		boolean flag = false;
+		String savedUser;
+		
+		try {
+			FileInputStream fileInputStream = new FileInputStream("src\\UserCredentials.csv");
+			Scanner scnr = new Scanner(fileInputStream);
+			
+			while(scnr.hasNextLine()) {
+				savedUser = scnr.nextLine();
+				if(savedUser.indexOf(username) != -1) {
+					flag = true;
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return flag;
+	}
+	
+	public boolean CheckPassword(String password) {
+		boolean flag = false;
+		String savedPass;
+		
+		try {
+			FileInputStream fileInputStream = new FileInputStream("src\\UserCredentials.csv");
+			Scanner scnr = new Scanner(fileInputStream);
+			
+			while(scnr.hasNextLine()) {
+				savedPass = scnr.nextLine();
+				if(savedPass.indexOf(password) != -1) {
+					flag = true;
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return flag;
 	}
 
 	/**
@@ -1379,10 +1419,12 @@ class detailedRepPanel extends JPanel {
 }
 
 class loginPanel extends JPanel {
+	EWalletApp eWalletApp = new EWalletApp();
 	JLabel usernameLbl, passwordLbl, loginLbl;
 	GridBagConstraints gbConst;
 	JTextField usernameIncField, passwordIncField;
 	JButton loginBtn;
+	String username, password;
 	
 	loginPanel() {
 		loginLbl = new JLabel("LOGIN");
@@ -1436,6 +1478,16 @@ class loginPanel extends JPanel {
 		loginBtn.setFont(new Font(null, Font.PLAIN, 28));
 		loginBtn.setPreferredSize(new Dimension(150,60));
 		this.add(loginBtn, gbConst);
+		
+		loginBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				username = usernameIncField.getText();
+				password = passwordIncField.getText();
+				if(eWalletApp.CheckUsername(username) == true && eWalletApp.CheckPassword(password) == true) {
+					System.out.println("Login Successsful");
+				}
+			}
+		});
 		
 		
 	}
