@@ -44,7 +44,9 @@ public class EWalletApp {
 			}
 		}
 	}
-	
+
+
+
 	public boolean CheckUsername(String username) {
 		boolean flag = false;
 		String savedUser;
@@ -65,18 +67,26 @@ public class EWalletApp {
 		return flag;
 	}
 	
-	public boolean CheckPassword(String password) {
+	public boolean CheckPassword(String username,String password) {
 		boolean flag = false;
-		String savedPass;
+		String lineTxt;
 		
 		try {
 			FileInputStream fileInputStream = new FileInputStream("src\\UserCredentials.csv");
 			Scanner scnr = new Scanner(fileInputStream);
 			
 			while(scnr.hasNextLine()) {
-				savedPass = scnr.nextLine();
-				if(savedPass.indexOf(password) != -1) {
-					flag = true;
+				lineTxt = scnr.nextLine();
+				if(lineTxt.indexOf(username) != -1) {
+					if((lineTxt.indexOf(username) + username.length() + 1) == lineTxt.indexOf(password)) {
+						for(int i = 0; i < AllData.size(); i++) {
+							if(AllData.get(i).getUsername().equals(username)) {
+								appFrame.user = AllData.get(i);
+							}
+						}
+						flag = true;
+						break;
+					}
 				}
 			}
 		} catch (FileNotFoundException e) {
@@ -186,7 +196,7 @@ class appFrame extends JFrame {
 		this.setMinimumSize(new Dimension(900,700));
 		this.setTitle("EWallet Application");
 
-		user = new User("Kevin", "Abc!1234"); // temporary solution until login is set up
+		user = new User("Default", "TempPassword!123"); // Default User.
 		expenserMain = new ExpenserMain();
 		expenserMain.userAtHand = user;
 		
@@ -1483,8 +1493,13 @@ class loginPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				username = usernameIncField.getText();
 				password = passwordIncField.getText();
-				if(eWalletApp.CheckUsername(username) == true && eWalletApp.CheckPassword(password) == true) {
+				if(eWalletApp.CheckUsername(username) == true && eWalletApp.CheckPassword(username, password) == true) {
+					usernameIncField.setText("");
+					passwordIncField.setText("");
 					System.out.println("Login Successsful");
+					JOptionPane.showMessageDialog(null,"Login Successful.  Welcome " + username + ".");
+				} else {
+					JOptionPane.showMessageDialog(null,"Incorrect Credentials!");
 				}
 			}
 		});
@@ -1571,12 +1586,22 @@ class createAccountPanel extends JPanel {
 		createAccBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(e.getSource() == createAccBtn) {
+					username = usernameField.getText();
+					password = passwordField.getText();
+					confPassword = confPasswordField.getText();
 					if(usernameField.getText().length() > 0 && passwordField.getText().length() > 0 && confPasswordField.getText().length() > 0) {
-						username = usernameField.getText();
-						password = passwordField.getText();
-						confPassword = confPasswordField.getText();
 						if(confPassword.equals(password)) {
 							eWalletApp.CreateUser(username, password);
+							if(eWalletApp.checkForRepeatUsernames(usernameField.getText())) {
+								JOptionPane.showMessageDialog(null, "Username taken. Please choose another.");
+							} else {
+								JOptionPane.showMessageDialog(null, "User created successfully.");
+								usernameField.setText("");
+								passwordField.setText("");
+								confPasswordField.setText("");
+							}
+						} else {
+							JOptionPane.showMessageDialog(null, "Passwords do not match!");
 						}
 					}
 				}
