@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 public class EWalletApp {
 	//this is the app class, has the GUI and create one object of your expense calculator class. The expense calculator class is the implementation of the Expenser interface
-	//private ArrayList<User> AllData;
+	private ArrayList<User> AllData = new ArrayList<>();
 
 	/**
 	 * Method responsible for creating a user account.  It adds username and password to a UserCredentials.csv file.
@@ -28,7 +28,7 @@ public class EWalletApp {
 
 		if (!checkForRepeatUsernames(username) && isComplexPassword(password)) { // If there are no repeat usernames and password is valid, a new account will be created and stored.
 			User user = new User(username, password);
-			//AllData.add(user);
+			AllData.add(user);
 
 			try { // Writes username and password to file in csv format
 				FileOutputStream fileOutputStream = new FileOutputStream("src//UserCredentials.csv", true);
@@ -43,6 +43,56 @@ public class EWalletApp {
 				e.printStackTrace();
 			}
 		}
+	}
+
+
+
+	public boolean CheckUsername(String username) {
+		boolean flag = false;
+		String savedUser;
+		
+		try {
+			FileInputStream fileInputStream = new FileInputStream("src\\UserCredentials.csv");
+			Scanner scnr = new Scanner(fileInputStream);
+			
+			while(scnr.hasNextLine()) {
+				savedUser = scnr.nextLine();
+				if(savedUser.indexOf(username) != -1) {
+					flag = true;
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return flag;
+	}
+	
+	public boolean CheckPassword(String username,String password) {
+		boolean flag = false;
+		String lineTxt;
+		
+		try {
+			FileInputStream fileInputStream = new FileInputStream("src\\UserCredentials.csv");
+			Scanner scnr = new Scanner(fileInputStream);
+			
+			while(scnr.hasNextLine()) {
+				lineTxt = scnr.nextLine();
+				if(lineTxt.indexOf(username) != -1) {
+					if((lineTxt.indexOf(username) + username.length() + 1) == lineTxt.indexOf(password)) {
+						for(int i = 0; i < AllData.size(); i++) {
+							if(AllData.get(i).getUsername().equals(username)) {
+								appFrame.user = AllData.get(i);
+							}
+						}
+						flag = true;
+						break;
+					}
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return flag;
 	}
 
 	/**
@@ -146,7 +196,7 @@ class appFrame extends JFrame {
 		this.setMinimumSize(new Dimension(900,700));
 		this.setTitle("EWallet Application");
 
-		user = new User("Kevin", "Abc!1234"); // temporary solution until login is set up
+		user = new User("Default", "TempPassword!123"); // Default User.
 		expenserMain = new ExpenserMain();
 		expenserMain.userAtHand = user;
 		
@@ -1379,10 +1429,12 @@ class detailedRepPanel extends JPanel {
 }
 
 class loginPanel extends JPanel {
+	EWalletApp eWalletApp = new EWalletApp();
 	JLabel usernameLbl, passwordLbl, loginLbl;
 	GridBagConstraints gbConst;
 	JTextField usernameIncField, passwordIncField;
 	JButton loginBtn;
+	String username, password;
 	
 	loginPanel() {
 		loginLbl = new JLabel("LOGIN");
@@ -1437,6 +1489,21 @@ class loginPanel extends JPanel {
 		loginBtn.setPreferredSize(new Dimension(150,60));
 		this.add(loginBtn, gbConst);
 		
+		loginBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				username = usernameIncField.getText();
+				password = passwordIncField.getText();
+				if(eWalletApp.CheckUsername(username) && eWalletApp.CheckPassword(username, password)) {
+					usernameIncField.setText("");
+					passwordIncField.setText("");
+					System.out.println("Login Successful");
+					JOptionPane.showMessageDialog(null,"Login Successful.  Welcome " + username + ".");
+				} else {
+					JOptionPane.showMessageDialog(null,"Incorrect Credentials!");
+				}
+			}
+		});
+		
 		
 	}
 }
@@ -1445,7 +1512,7 @@ class createAccountPanel extends JPanel {
 	EWalletApp eWalletApp = new EWalletApp();
 	JLabel usernameLbl, passwordLbl, confPasswordLbl, createAccLbl;
 	GridBagConstraints gbConst;
-	JTextField usernameField, passwordField, confPasswordField;
+	static JTextField usernameField, passwordField, confPasswordField;
 	JButton createAccBtn;
 	String username, password, confPassword;
 	
@@ -1519,13 +1586,25 @@ class createAccountPanel extends JPanel {
 		createAccBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(e.getSource() == createAccBtn) {
+					username = usernameField.getText();
+					password = passwordField.getText();
+					confPassword = confPasswordField.getText();
 					if(usernameField.getText().length() > 0 && passwordField.getText().length() > 0 && confPasswordField.getText().length() > 0) {
-						username = usernameField.getText();
-						password = passwordField.getText();
-						confPassword = confPasswordField.getText();
 						if(confPassword.equals(password)) {
-							eWalletApp.CreateUser(username, password);
+							if(eWalletApp.checkForRepeatUsernames(usernameField.getText())) {
+								JOptionPane.showMessageDialog(null, "Username taken. Please choose another.");
+							} else {
+								eWalletApp.CreateUser(username, password);
+								JOptionPane.showMessageDialog(null, "User created successfully.");
+								usernameField.setText("");
+								passwordField.setText("");
+								confPasswordField.setText("");
+							}
+						} else {
+							JOptionPane.showMessageDialog(null, "Passwords do not match!");
 						}
+					} else {
+						JOptionPane.showMessageDialog(null,"Not all fields filled out.  Please fill them out.");
 					}
 				}
 			}
