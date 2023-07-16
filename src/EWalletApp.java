@@ -50,11 +50,11 @@ public class EWalletApp {
 	public boolean CheckUsername(String username) {
 		boolean flag = false;
 		String savedUser;
-		
+
 		try {
 			FileInputStream fileInputStream = new FileInputStream("src\\UserCredentials.csv");
 			Scanner scnr = new Scanner(fileInputStream);
-			
+
 			while(scnr.hasNextLine()) {
 				savedUser = scnr.nextLine();
 				if(savedUser.indexOf(username) != -1) {
@@ -66,15 +66,15 @@ public class EWalletApp {
 		}
 		return flag;
 	}
-	
+
 	public boolean CheckPassword(String username,String password) {
 		boolean flag = false;
 		String lineTxt;
-		
+
 		try {
 			FileInputStream fileInputStream = new FileInputStream("src\\UserCredentials.csv");
 			Scanner scnr = new Scanner(fileInputStream);
-			
+
 			while(scnr.hasNextLine()) {
 				lineTxt = scnr.nextLine();
 				if(lineTxt.indexOf(username) != -1) {
@@ -189,7 +189,7 @@ class appFrame extends JFrame {
 	ExpenserMain expenserMain;
 	JMenuBar navMenuBar;
 	JMenu navMenu;
-	JMenuItem homeNav, addItemNav, importNav, estimateNav, incomeReportNav, expenseReportNav, detailedReportNav, loginNav, createAccNav; // different pages
+	JMenuItem homeNav, addItemNav, importNav, estimateNav, incomeReportNav, expenseReportNav, detailedReportNav, loginNav, createAccNav, incomeTool; // different pages
 
 	appFrame(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -199,7 +199,7 @@ class appFrame extends JFrame {
 		user = new User("Default", "TempPassword!123"); // Default User.
 		expenserMain = new ExpenserMain();
 		expenserMain.userAtHand = user;
-		
+
 		loginPanel lPanel = new loginPanel();
 		createAccountPanel createAccPanel = new createAccountPanel();
 		homePanel hPanel = new homePanel();
@@ -209,6 +209,7 @@ class appFrame extends JFrame {
 		incomeRepPanel incRepPanel = new incomeRepPanel();
 		expenseRepPanel expRepPanel = new expenseRepPanel();
 		detailedRepPanel detRepPanel = new detailedRepPanel();
+		SalaryGUI salaryGUI = new SalaryGUI();
 		getContentPane().add(hPanel); // setting default page
 		navMenuBar = new JMenuBar();
 		navMenu = new JMenu("<html><p style='margin-left:20'>Menu"); // Menu
@@ -352,7 +353,28 @@ class appFrame extends JFrame {
 				repaint();
 			}
 		});
-		
+
+		incomeTool = new JMenuItem("<html><p style='margin-left:15'>Income Estimator"); // Detailed Report Page
+		incomeTool.addMouseListener(new MouseAdapter() {
+			// once the page is clicked and released, it will be displayed, while discarding previous jpanel instead of storing it
+			@Override
+			public void mousePressed(MouseEvent e) {
+
+				super.mouseClicked(e);
+				getContentPane().removeAll();
+				getContentPane().add(salaryGUI);
+				revalidate();
+				repaint();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				super.mouseReleased(e);
+				revalidate();
+				repaint();
+			}
+		});
+
 		loginNav = new JMenuItem("<html><p style='margin-left:15'>Login"); // Add Items Page
 		loginNav.addMouseListener(new MouseAdapter() {
 			// once the page is clicked and released, it will be displayed while discarding previous JPanel instead of storing it
@@ -373,7 +395,7 @@ class appFrame extends JFrame {
 				repaint();
 			}
 		});
-		
+
 		createAccNav = new JMenuItem("<html><p style='margin-left:15'>Create Account"); // Add Items Page
 		createAccNav.addMouseListener(new MouseAdapter() {
 			// once the page is clicked and released, it will be displayed while discarding previous JPanel instead of storing it
@@ -404,6 +426,7 @@ class appFrame extends JFrame {
 		incomeReportNav.setFont(new Font(null, Font.PLAIN, 20));
 		expenseReportNav.setFont(new Font(null, Font.PLAIN, 20));
 		detailedReportNav.setFont(new Font(null, Font.PLAIN, 20));
+		incomeTool.setFont(new Font(null, Font.PLAIN, 20));
 		loginNav.setFont(new Font(null, Font.PLAIN, 20));
 		createAccNav.setFont(new Font(null, Font.PLAIN, 20));
 
@@ -415,10 +438,11 @@ class appFrame extends JFrame {
 		navMenu.add(incomeReportNav);
 		navMenu.add(expenseReportNav);
 		navMenu.add(detailedReportNav);
+		navMenu.add(incomeTool);
 		navMenu.add(loginNav);
 		navMenu.add(createAccNav);
 		navMenuBar.add(navMenu);
-		
+
 
 		this.setJMenuBar(navMenuBar);
 		this.setLayout(new CardLayout());
@@ -1435,7 +1459,7 @@ class loginPanel extends JPanel {
 	JTextField usernameIncField, passwordIncField;
 	JButton loginBtn;
 	String username, password;
-	
+
 	loginPanel() {
 		loginLbl = new JLabel("LOGIN");
 		usernameLbl = new JLabel("Username: ");
@@ -1443,19 +1467,19 @@ class loginPanel extends JPanel {
 		loginBtn = new JButton("Login");
 		gbConst = new GridBagConstraints();
 		this.setLayout(new GridBagLayout());
-		
+
 		passwordIncField = new JTextField();
 		passwordIncField.setPreferredSize(new Dimension(200, 40));
 		usernameIncField = new JTextField();
 		usernameIncField.setPreferredSize(new Dimension(200, 40));
-		
+
 		gbConst.gridx = 0;
 		gbConst.gridy = 0;
 		gbConst.gridwidth = 2;
 		gbConst.insets = new Insets(20,10,20,40);
 		loginLbl.setFont(new Font(null, Font.PLAIN, 44));
 		this.add(loginLbl, gbConst);
-		
+
 		gbConst.gridx = 1;
 		gbConst.gridy = 2;
 		gbConst.gridwidth = 1;
@@ -1480,7 +1504,7 @@ class loginPanel extends JPanel {
 		gbConst.insets = new Insets(0,0,20,20);
 		usernameLbl.setFont(new Font(null, Font.PLAIN, 44));
 		this.add(usernameLbl, gbConst);
-		
+
 		gbConst.gridx = 0;
 		gbConst.gridy = 4;
 		gbConst.gridwidth = 2;
@@ -1488,7 +1512,7 @@ class loginPanel extends JPanel {
 		loginBtn.setFont(new Font(null, Font.PLAIN, 28));
 		loginBtn.setPreferredSize(new Dimension(150,60));
 		this.add(loginBtn, gbConst);
-		
+
 		loginBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				username = usernameIncField.getText();
@@ -1503,8 +1527,8 @@ class loginPanel extends JPanel {
 				}
 			}
 		});
-		
-		
+
+
 	}
 }
 
@@ -1515,7 +1539,7 @@ class createAccountPanel extends JPanel {
 	static JTextField usernameField, passwordField, confPasswordField;
 	JButton createAccBtn;
 	String username, password, confPassword;
-	
+
 	createAccountPanel() {
 		usernameLbl = new JLabel("Enter Username:");
 		passwordLbl = new JLabel("Enter Password:");
@@ -1523,24 +1547,24 @@ class createAccountPanel extends JPanel {
 		createAccLbl = new JLabel("Create Account");
 		gbConst = new GridBagConstraints();
 		this.setLayout(new GridBagLayout());
-		
+
 		usernameField = new JTextField();
 		usernameField.setPreferredSize(new Dimension(200, 40));
 		passwordField = new JTextField();
 		passwordField.setPreferredSize(new Dimension(200, 40));
 		confPasswordField = new JTextField();
 		confPasswordField.setPreferredSize(new Dimension(200, 40));
-		
+
 		createAccBtn = new JButton("Create Account");
 		createAccBtn.setPreferredSize(new Dimension(200, 40));
-		
+
 		gbConst.gridx = 1;
 		gbConst.gridy = 0;
 		gbConst.gridwidth = 2;
 		gbConst.insets = new Insets(0,20,40,20);
 		createAccLbl.setFont(new Font(null, Font.PLAIN, 44));
 		this.add(createAccLbl, gbConst);
-		
+
 		gbConst.gridx = 0;
 		gbConst.gridy = 1;
 		gbConst.insets = new Insets(0,40,40,0);
@@ -1552,7 +1576,7 @@ class createAccountPanel extends JPanel {
 		gbConst.insets = new Insets(20,0,40,40);
 		usernameField.setFont(new Font(null, Font.PLAIN, 32));
 		this.add(usernameField, gbConst);
-		
+
 		gbConst.gridx = 0;
 		gbConst.gridy = 2;
 		gbConst.insets = new Insets(0,40,40,0);
@@ -1564,7 +1588,7 @@ class createAccountPanel extends JPanel {
 		gbConst.insets = new Insets(20,0,40,40);
 		passwordField.setFont(new Font(null, Font.PLAIN, 32));
 		this.add(passwordField, gbConst);
-		
+
 		gbConst.gridx = 0;
 		gbConst.gridy = 3;
 		gbConst.insets = new Insets(0,40,40,0);
@@ -1576,13 +1600,13 @@ class createAccountPanel extends JPanel {
 		gbConst.insets = new Insets(20,0,40,40);
 		confPasswordField.setFont(new Font(null, Font.PLAIN, 32));
 		this.add(confPasswordField, gbConst);
-		
+
 		gbConst.gridx = 1;
 		gbConst.gridy = 4;
 		gbConst.insets = new Insets(20, 20, 20, 20);
 		createAccBtn.setFont(new Font(null, Font.PLAIN, 14));
 		this.add(createAccBtn, gbConst);
-		
+
 		createAccBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(e.getSource() == createAccBtn) {
@@ -1609,8 +1633,8 @@ class createAccountPanel extends JPanel {
 				}
 			}
 		});
-		
+
 	}
-	
+
 }
 
